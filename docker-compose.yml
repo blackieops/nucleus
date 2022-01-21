@@ -1,0 +1,15 @@
+---
+version: "3.9"
+
+services:
+  postgres:
+    image: postgres:14-alpine
+    ports:
+    - "5444:5432"
+    environment:
+      POSTGRES_PASSWORD: "password123"
+    volumes:
+    - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata: {}

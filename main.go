@@ -7,6 +7,8 @@ import (
 	"com.blackieops.nucleus/config"
 	"com.blackieops.nucleus/webdav"
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
+	"gorm.io/driver/postgres"
 )
 
 func main() {
@@ -14,6 +16,11 @@ func main() {
 	flag.Parse()
 
 	conf, err := config.LoadConfig(*configPath)
+	if err != nil {
+		panic(err)
+	}
+
+	_, err = gorm.Open(postgres.Open(conf.DatabaseURL), &gorm.Config{})
 	if err != nil {
 		panic(err)
 	}

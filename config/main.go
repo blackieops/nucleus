@@ -7,7 +7,8 @@ import (
 )
 
 type Config struct {
-	Port int `yaml:"port"`
+	Port        int    `yaml:"port"`
+	DatabaseURL string `yaml:"database_url"`
 }
 
 func LoadConfig(configPath string) (*Config, error) {
