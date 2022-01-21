@@ -5,11 +5,12 @@ import (
 	"fmt"
 
 	"com.blackieops.nucleus/config"
+	"com.blackieops.nucleus/data"
 	"com.blackieops.nucleus/webdav"
 	"github.com/gin-gonic/gin"
-	"gorm.io/gorm"
-	"gorm.io/driver/postgres"
 )
+
+var DBContext *data.Context
 
 func main() {
 	configPath := flag.String("config", "config.yaml", "Path to configuration file.")
@@ -20,10 +21,8 @@ func main() {
 		panic(err)
 	}
 
-	_, err = gorm.Open(postgres.Open(conf.DatabaseURL), &gorm.Config{})
-	if err != nil {
-		panic(err)
-	}
+	DBContext = data.Connect(conf.DatabaseURL)
+	data.AutoMigrate(DBContext)
 
 	r := gin.Default()
 
