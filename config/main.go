@@ -7,8 +7,10 @@ import (
 )
 
 type Config struct {
-	Port        int    `yaml:"port"`
-	DatabaseURL string `yaml:"database_url"`
+	BaseURL       string `yaml:"base_url"`
+	Port          int    `yaml:"port"`
+	DatabaseURL   string `yaml:"database_url"`
+	SessionSecret string `yaml:"session_secret"`
 }
 
 func LoadConfig(configPath string) (*Config, error) {

@@ -4,6 +4,6 @@ package nxc
 
 type UserResponse struct {
 	Enabled     bool   `json:"enabled"`
-	UserId      string `json:"id"`
+	UserID      string `json:"id"`
 	DisplayName string `json:"display-name"` // just *why*
 }

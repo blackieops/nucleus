@@ -1,0 +1,17 @@
+<h1>login</h1>
+
+<!-- this is of course very fake just for early stage testing. -->
+<form action="" method="POST">
+	{{ range .users }}
+	<div>
+		<label>
+			<input type="radio" name="UserID" value="{{ .ID }}">
+			({{ .ID }}) {{ .Username }}
+		</label>
+	</div>
+	{{ end }}
+
+	<p>
+		<input type="submit" value="Log In">
+	</p>
+</form>

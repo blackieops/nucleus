@@ -11,3 +11,15 @@ type User struct {
 	EmailAddress          string `gorm:"index"`
 	NextcloudAppPasswords []NextcloudAppPassword
 }
+
+func FindAllUsers(ctx *Context) []*User {
+	var users []*User
+	ctx.DB.Find(&users, User{})
+	return users
+}
+
+func FindUser(ctx *Context, id int) *User {
+	var user *User
+	ctx.DB.First(&user, id)
+	return user
+}
