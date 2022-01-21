@@ -1,12 +1,12 @@
 package main
 
 import (
-	"fmt"
 	"flag"
+	"fmt"
 
-	"github.com/gin-gonic/gin"
-	"com.blackieops.nucleus/webdav"
 	"com.blackieops.nucleus/config"
+	"com.blackieops.nucleus/webdav"
+	"github.com/gin-gonic/gin"
 )
 
 func main() {

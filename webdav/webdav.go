@@ -1,12 +1,12 @@
 package webdav
 
 import (
-  "net/http"
+	"net/http"
 )
 
 type Config struct {
-  Storage FileStorage
-  Index   FileIndex
+	Storage FileStorage
+	Index   FileIndex
 }
 
 // FileStorage provides an interface to connect with some mass-storage backend,

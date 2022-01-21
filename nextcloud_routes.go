@@ -1,26 +1,26 @@
 package main
 
 import (
-	"github.com/gin-gonic/gin"
 	"com.blackieops.nucleus/nxc"
+	"github.com/gin-gonic/gin"
 )
 
 func mountNextcloudRoutes(r *gin.RouterGroup) {
-	r.GET("/status.php", func (c *gin.Context) {
+	r.GET("/status.php", func(c *gin.Context) {
 		payload := &nxc.StatusResponse{
-			Installed: true,
-			Maintenance: false,
+			Installed:            true,
+			Maintenance:          false,
 			NeedsDatabaseUpgrade: false,
-			Version: "22.2.3.0",
-			VersionString: "22.2.3",
-			Edition: "",
-			ProductName: "Nextcloud",
-			ExtendedSupport: false,
+			Version:              "22.2.3.0",
+			VersionString:        "22.2.3",
+			Edition:              "",
+			ProductName:          "Nextcloud",
+			ExtendedSupport:      false,
 		}
 		c.JSON(200, payload)
 	})
 
-	r.POST("/index.php/login/v2", func (c *gin.Context) {
+	r.POST("/index.php/login/v2", func(c *gin.Context) {
 		// TODO: implement login v2 flow
 	})
 
