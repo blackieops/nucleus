@@ -1,17 +1,18 @@
-package main
+package auth
 
 import (
 	"com.blackieops.nucleus/config"
+	"com.blackieops.nucleus/data"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 )
 
-type MiddlewareRouter struct {
+type AuthMiddleware struct {
 	Config *config.Config
 }
 
 // Middleware to check if there is a currently logged-in user in the session.
-func (r *MiddlewareRouter) EnsureSession(c *gin.Context) {
+func (r *AuthMiddleware) EnsureSession(c *gin.Context) {
 	session := sessions.Default(c)
 
 	if session.Get("CurrentUserID") == nil {
@@ -21,4 +22,10 @@ func (r *MiddlewareRouter) EnsureSession(c *gin.Context) {
 		c.Abort()
 		return
 	}
+}
+
+func CurrentUser(c *data.Context, g *gin.Context) *User {
+	session := sessions.Default(g)
+	userID := session.Get("CurrentUserID").(uint)
+	return FindUser(c, int(userID))
 }

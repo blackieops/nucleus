@@ -1,11 +1,8 @@
-package data
+package nxc
 
 import (
-	"encoding/hex"
+	"com.blackieops.nucleus/data"
 	"errors"
-	"math/rand"
-
-	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )
 
@@ -30,14 +27,7 @@ type NextcloudAuthSession struct {
 	Username string
 }
 
-type NextcloudAppPassword struct {
-	gorm.Model
-	PasswordDigest string `gorm:"index"`
-	UserID         int
-	User           User
-}
-
-func CreateNextcloudAuthSession(ctx *Context) *NextcloudAuthSession {
+func CreateNextcloudAuthSession(ctx *data.Context) *NextcloudAuthSession {
 	session := &NextcloudAuthSession{
 		PollToken:  generateNextcloudToken(64),
 		LoginToken: generateNextcloudToken(64),
@@ -46,7 +36,7 @@ func CreateNextcloudAuthSession(ctx *Context) *NextcloudAuthSession {
 	return session
 }
 
-func FindNextcloudAuthSessionByPollToken(ctx *Context, token string) (*NextcloudAuthSession, error) {
+func FindNextcloudAuthSessionByPollToken(ctx *data.Context, token string) (*NextcloudAuthSession, error) {
 	var session *NextcloudAuthSession
 	ctx.DB.Where("poll_token = ?", token).First(&session)
 
@@ -57,7 +47,7 @@ func FindNextcloudAuthSessionByPollToken(ctx *Context, token string) (*Nextcloud
 	}
 }
 
-func FindNextcloudAuthSessionByLoginToken(ctx *Context, token string) (*NextcloudAuthSession, error) {
+func FindNextcloudAuthSessionByLoginToken(ctx *data.Context, token string) (*NextcloudAuthSession, error) {
 	var session *NextcloudAuthSession
 	ctx.DB.Where("login_token = ?", token).First(&session)
 
@@ -68,37 +58,8 @@ func FindNextcloudAuthSessionByLoginToken(ctx *Context, token string) (*Nextclou
 	}
 }
 
-func DestroyNextcloudAuthSession(ctx *Context, session *NextcloudAuthSession) error {
+func DestroyNextcloudAuthSession(ctx *data.Context, session *NextcloudAuthSession) error {
 	ctx.DB.Delete(session)
 	// TODO: errors?
 	return nil
-}
-
-func CreateNextcloudAppPassword(ctx *Context, session *NextcloudAuthSession, user *User) (*NextcloudAppPassword, error) {
-	password := generateNextcloudToken(64)
-	// TODO: parameterize cost into config value?
-	digest, err := bcrypt.GenerateFromPassword([]byte(password), 10)
-	if err != nil {
-		panic(err)
-	}
-	appPassword := &NextcloudAppPassword{
-		PasswordDigest: string(digest),
-		User:           *user,
-	}
-
-	session.RawAppPassword = password
-	session.Username = user.Username
-
-	ctx.DB.Create(appPassword)
-	ctx.DB.Save(session)
-
-	return appPassword, nil
-}
-
-func generateNextcloudToken(length int) string {
-	b := make([]byte, length)
-	if _, err := rand.Read(b); err != nil {
-		return ""
-	}
-	return hex.EncodeToString(b)
 }

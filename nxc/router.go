@@ -1,9 +1,10 @@
-package main
+package nxc
 
 import (
+	"com.blackieops.nucleus/auth"
 	"com.blackieops.nucleus/config"
 	"com.blackieops.nucleus/data"
-	"com.blackieops.nucleus/nxc"
+	"com.blackieops.nucleus/webdav"
 	"github.com/gin-gonic/gin"
 )
 
@@ -13,10 +14,10 @@ type NextcloudRouter struct {
 }
 
 func (n *NextcloudRouter) Mount(r *gin.RouterGroup) {
-	middleware := &MiddlewareRouter{Config: n.Config}
+	middleware := &auth.AuthMiddleware{Config: n.Config}
 
 	r.GET("/status.php", func(c *gin.Context) {
-		payload := &nxc.StatusResponse{
+		payload := &StatusResponse{
 			Installed:            true,
 			Maintenance:          false,
 			NeedsDatabaseUpgrade: false,
@@ -30,9 +31,9 @@ func (n *NextcloudRouter) Mount(r *gin.RouterGroup) {
 	})
 
 	r.POST("/index.php/login/v2", func(c *gin.Context) {
-		session := data.CreateNextcloudAuthSession(n.DBContext)
-		payload := &nxc.PollResponse{
-			Poll: nxc.PollEndpoint{
+		session := CreateNextcloudAuthSession(n.DBContext)
+		payload := &PollResponse{
+			Poll: PollEndpoint{
 				Token:       session.PollToken,
 				EndpointURL: n.Config.BaseURL + "/nextcloud/index.php/login/v2/poll",
 			},
@@ -44,17 +45,17 @@ func (n *NextcloudRouter) Mount(r *gin.RouterGroup) {
 
 	r.POST("/index.php/login/v2/poll", func(c *gin.Context) {
 		token := c.PostForm("token")
-		session, err := data.FindNextcloudAuthSessionByPollToken(n.DBContext, token)
+		session, err := FindNextcloudAuthSessionByPollToken(n.DBContext, token)
 		if err != nil || session.RawAppPassword == "" {
 			c.JSON(404, make([]string, 0))
 			return
 		}
-		payload := &nxc.PollSuccessResponse{
+		payload := &PollSuccessResponse{
 			Server:   n.Config.BaseURL,
 			Username: session.Username,
 			Password: session.RawAppPassword,
 		}
-		data.DestroyNextcloudAuthSession(n.DBContext, session)
+		DestroyNextcloudAuthSession(n.DBContext, session)
 		c.JSON(200, payload)
 	})
 
@@ -64,13 +65,13 @@ func (n *NextcloudRouter) Mount(r *gin.RouterGroup) {
 	})
 
 	r.POST("/index.php/login/v2/grant", middleware.EnsureSession, func(c *gin.Context) {
-		user := currentUser(n.DBContext, c)
-		authSession, err := data.FindNextcloudAuthSessionByLoginToken(n.DBContext, c.Query("token"))
+		user := auth.CurrentUser(n.DBContext, c)
+		authSession, err := FindNextcloudAuthSessionByLoginToken(n.DBContext, c.Query("token"))
 		if err != nil {
 			c.JSON(404, gin.H{"error": err})
 			return
 		}
-		data.CreateNextcloudAppPassword(n.DBContext, authSession, user)
+		CreateNextcloudAppPassword(n.DBContext, authSession, user)
 		c.HTML(201, "nextcloud_grant_success.html", gin.H{})
 	})
 
@@ -79,4 +80,8 @@ func (n *NextcloudRouter) Mount(r *gin.RouterGroup) {
 	r.Handle("GET", "/remote.php/dav/files/:username/*filePath", forwardToWebdav)
 	r.Handle("PUT", "/remote.php/dav/files/:username/*filePath", forwardToWebdav)
 	// TODO: Copy? Move? Delete? Others??
+}
+
+func forwardToWebdav(c *gin.Context) {
+	webdav.HandleRequest(c.Writer, c.Request)
 }

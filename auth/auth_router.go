@@ -1,4 +1,4 @@
-package main
+package auth
 
 import (
 	"strconv"
@@ -14,7 +14,7 @@ type AuthRouter struct {
 
 func (a *AuthRouter) Mount(r *gin.RouterGroup) {
 	r.GET("/login", func(c *gin.Context) {
-		users := data.FindAllUsers(a.DBContext)
+		users := FindAllUsers(a.DBContext)
 		c.HTML(200, "auth_login.html", gin.H{"users": users})
 	})
 
@@ -25,7 +25,7 @@ func (a *AuthRouter) Mount(r *gin.RouterGroup) {
 			return
 		}
 
-		user := data.FindUser(a.DBContext, userId)
+		user := FindUser(a.DBContext, userId)
 		session := sessions.Default(c)
 		session.Set("CurrentUserID", user.ID)
 		session.Save()

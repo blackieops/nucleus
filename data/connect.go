@@ -17,11 +17,3 @@ func Connect(databaseUrl string) *Context {
 
 	return &Context{DB: gormDB}
 }
-
-func AutoMigrate(ctx *Context) {
-	ctx.DB.AutoMigrate(
-		&User{},
-		&NextcloudAuthSession{},
-		&NextcloudAppPassword{},
-	)
-}

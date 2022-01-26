@@ -4,9 +4,10 @@ import (
 	"flag"
 	"fmt"
 
+	"com.blackieops.nucleus/auth"
 	"com.blackieops.nucleus/config"
 	"com.blackieops.nucleus/data"
-	"com.blackieops.nucleus/webdav"
+	"com.blackieops.nucleus/nxc"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-contrib/sessions/cookie"
 	"github.com/gin-gonic/gin"
@@ -22,7 +23,8 @@ func main() {
 	}
 
 	dbContext := data.Connect(conf.DatabaseURL)
-	data.AutoMigrate(dbContext)
+	auth.AutoMigrate(dbContext)
+	nxc.AutoMigrate(dbContext)
 
 	r := gin.Default()
 	r.LoadHTMLGlob("templates/*")
@@ -30,24 +32,14 @@ func main() {
 	sessionStore := cookie.NewStore([]byte(conf.SessionSecret))
 	r.Use(sessions.Sessions("nucleussession", sessionStore))
 
-	nextcloudRouter := &NextcloudRouter{
+	nextcloudRouter := &nxc.NextcloudRouter{
 		DBContext: dbContext,
 		Config:    conf,
 	}
 	nextcloudRouter.Mount(r.Group("/nextcloud"))
 
-	authRouter := &AuthRouter{DBContext: dbContext}
+	authRouter := &auth.AuthRouter{DBContext: dbContext}
 	authRouter.Mount(r.Group("/auth"))
 
 	r.Run(fmt.Sprintf(":%d", conf.Port))
-}
-
-func currentUser(c *data.Context, g *gin.Context) *data.User {
-	session := sessions.Default(g)
-	userID := session.Get("CurrentUserID").(uint)
-	return data.FindUser(c, int(userID))
-}
-
-func forwardToWebdav(c *gin.Context) {
-	webdav.HandleRequest(c.Writer, c.Request)
 }
