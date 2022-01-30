@@ -1,8 +1,10 @@
 package nxc
 
 import (
+	"fmt"
 	"encoding/hex"
 	"math/rand"
+	"strings"
 
 	"com.blackieops.nucleus/auth"
 	"com.blackieops.nucleus/data"
@@ -33,13 +35,30 @@ func CreateNextcloudAppPassword(
 		User:           *user,
 	}
 
-	session.RawAppPassword = password
+	ctx.DB.Create(appPassword)
+
+	// We need to prefix the ID to the password so we have a way to look up
+	// which AppPassword this is when we compare the hash later.
+	session.RawAppPassword = fmt.Sprint(appPassword.ID)+"-"+password
 	session.Username = user.Username
 
-	ctx.DB.Create(appPassword)
 	ctx.DB.Save(session)
 
 	return appPassword, nil
+}
+
+func FindNextcloudAppPasswordByPassword(c *data.Context, composite string) (*NextcloudAppPassword, error) {
+	bits := strings.Split(composite, "-")
+	var appPassword *NextcloudAppPassword
+	err := c.DB.Where("id = ?", bits[0]).First(&appPassword).Error
+	if err != nil {
+		return &NextcloudAppPassword{}, err
+	}
+	err = bcrypt.CompareHashAndPassword([]byte(appPassword.PasswordDigest), []byte(bits[1]))
+	if err != nil {
+		return &NextcloudAppPassword{}, err
+	}
+	return appPassword, err
 }
 
 func generateNextcloudToken(length int) string {
