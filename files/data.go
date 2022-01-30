@@ -47,9 +47,9 @@ func FindFileByPath(ctx *data.Context, user *auth.User, path string) (*File, err
 
 func FindDirByPath(ctx *data.Context, user *auth.User, path string) (*Directory, error) {
 	var file *Directory
-	ctx.DB.Where("user_id = ? and full_name = ?", user.ID, path).First(&file)
-	if file == nil {
-		return &Directory{}, errors.New("Could not find file.")
+	err := ctx.DB.Where("user_id = ? and full_name = ?", user.ID, path).First(&file).Error
+	if err != nil {
+		return &Directory{}, err
 	}
 	return file, nil
 }
