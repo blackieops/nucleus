@@ -10,11 +10,6 @@ import (
 	"com.blackieops.nucleus/data"
 )
 
-type StorageBackend interface {
-	List(*auth.User, string) []fs.FileInfo
-	Stat(*auth.User, string) (fs.FileInfo, error)
-}
-
 type Crawler struct {
 	DBContext *data.Context
 	Backend   StorageBackend
