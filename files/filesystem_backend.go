@@ -4,6 +4,8 @@ import (
 	"io/fs"
 	"io/ioutil"
 	"os"
+	"fmt"
+	"crypto/sha1"
 
 	"com.blackieops.nucleus/auth"
 	"com.blackieops.nucleus/data"
@@ -29,6 +31,15 @@ func (b *FilesystemBackend) Stat(user *auth.User, path string) (fs.FileInfo, err
 
 func (b *FilesystemBackend) ReadFile(file *File) ([]byte, error) {
 	return ioutil.ReadFile(b.userStoragePath(&file.User, file.FullName))
+}
+
+func (b *FilesystemBackend) FileDigest(file *File) (string, error) {
+	fileBytes, err := b.ReadFile(file)
+	if err != nil {
+		return "", err
+	}
+	digest := sha1.Sum(fileBytes)
+	return fmt.Sprintf("%x", digest[:]), nil
 }
 
 func (b *FilesystemBackend) storagePath(path *string) string {
