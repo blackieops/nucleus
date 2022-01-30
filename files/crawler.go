@@ -82,7 +82,7 @@ func (c *Crawler) DiscoverFile(user *auth.User, dir *Directory, name string) (*F
 	if dir != nil {
 		fileEntity.Parent = dir
 	}
-	digest, err := c.Backend.FileDigest(fileEntity)
+	digest, err := c.Backend.FileDigest(user, fileEntity)
 	if err != nil {
 		return &File{}, err
 	}

@@ -9,6 +9,6 @@ import (
 type StorageBackend interface {
 	List(*auth.User, string) []fs.FileInfo
 	Stat(*auth.User, string) (fs.FileInfo, error)
-	ReadFile(*File) ([]byte, error)
-	FileDigest(*File) (string, error)
+	ReadFile(*auth.User, *File) ([]byte, error)
+	FileDigest(*auth.User, *File) (string, error)
 }
