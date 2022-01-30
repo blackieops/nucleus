@@ -7,6 +7,7 @@ import (
 	"com.blackieops.nucleus/auth"
 	"com.blackieops.nucleus/config"
 	"com.blackieops.nucleus/data"
+	"com.blackieops.nucleus/files"
 	"com.blackieops.nucleus/nxc"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-contrib/sessions/cookie"
@@ -25,6 +26,7 @@ func main() {
 	dbContext := data.Connect(conf.DatabaseURL)
 	auth.AutoMigrate(dbContext)
 	nxc.AutoMigrate(dbContext)
+	files.AutoMigrate(dbContext)
 
 	r := gin.Default()
 	r.LoadHTMLGlob("templates/*")
