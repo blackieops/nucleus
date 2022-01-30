@@ -2,21 +2,23 @@ package files
 
 import (
 	"com.blackieops.nucleus/auth"
-	"gorm.io/gorm"
+	"time"
 )
 
 type File struct {
-	gorm.Model
+	ID        uint `gorm:"primaryKey"`
+	CreatedAt time.Time
+	UpdatedAt time.Time
 
 	// Basename of the file
 	Name string
 
 	// Optional association to a Directory
-	ParentID *int
+	ParentID *uint
 	Parent   *Directory
 
 	// Association to the user who owns this file
-	UserID int
+	UserID uint
 	User   auth.User
 
 	// Projected full path of all parent directories for easier lookups
@@ -30,7 +32,9 @@ type File struct {
 }
 
 type Directory struct {
-	gorm.Model
+	ID        uint `gorm:"primaryKey"`
+	CreatedAt time.Time
+	UpdatedAt time.Time
 
 	// Name of the directory
 	Name string

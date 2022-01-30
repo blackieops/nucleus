@@ -2,11 +2,13 @@ package auth
 
 import (
 	"com.blackieops.nucleus/data"
-	"gorm.io/gorm"
+	"time"
 )
 
 type User struct {
-	gorm.Model
+	ID           uint `gorm:"primaryKey"`
+	CreatedAt    time.Time
+	UpdatedAt    time.Time
 	Username     string `gorm:"index"`
 	Name         string
 	EmailAddress string `gorm:"index"`
