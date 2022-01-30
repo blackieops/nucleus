@@ -7,22 +7,22 @@ import (
 	"com.blackieops.nucleus/data"
 )
 
-func ListFiles(ctx *data.Context, dir *Directory) []*File {
+func ListFiles(ctx *data.Context, user *auth.User, dir *Directory) []*File {
 	var entries []*File
 	if dir == nil {
-		ctx.DB.Where("parent_id is null").Find(&entries)
+		ctx.DB.Where("user_id = ? and parent_id is null", user.ID).Find(&entries)
 	} else {
-		ctx.DB.Where("parent_id = ?", dir.ID).Find(&entries)
+		ctx.DB.Where("user_id = ? and parent_id = ?", user.ID, dir.ID).Find(&entries)
 	}
 	return entries
 }
 
-func ListDirectories(ctx *data.Context, dir *Directory) []*Directory {
+func ListDirectories(ctx *data.Context, user *auth.User, dir *Directory) []*Directory {
 	var entries []*Directory
 	if dir == nil {
-		ctx.DB.Where("parent_id is null").Find(&entries)
+		ctx.DB.Where("user_id = ? and parent_id is null", user.ID).Find(&entries)
 	} else {
-		ctx.DB.Where("parent_id = ?", dir.ID).Find(&entries)
+		ctx.DB.Where("user_id = ? and parent_id = ?", user.ID, dir.ID).Find(&entries)
 	}
 	return entries
 }
