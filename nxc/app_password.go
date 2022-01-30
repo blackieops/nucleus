@@ -50,7 +50,7 @@ func CreateNextcloudAppPassword(
 func FindNextcloudAppPasswordByPassword(c *data.Context, composite string) (*NextcloudAppPassword, error) {
 	bits := strings.Split(composite, "-")
 	var appPassword *NextcloudAppPassword
-	err := c.DB.Where("id = ?", bits[0]).First(&appPassword).Error
+	err := c.DB.Preload("User").Where("id = ?", bits[0]).First(&appPassword).Error
 	if err != nil {
 		return &NextcloudAppPassword{}, err
 	}
