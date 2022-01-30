@@ -51,7 +51,7 @@ func (n *NextcloudRouter) Mount(r *gin.RouterGroup) {
 			return
 		}
 		payload := &PollSuccessResponse{
-			Server:   n.Config.BaseURL,
+			Server:   n.Config.BaseURL + "/nextcloud",
 			Username: session.Username,
 			Password: session.RawAppPassword,
 		}
