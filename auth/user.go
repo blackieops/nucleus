@@ -23,3 +23,9 @@ func FindUser(ctx *data.Context, id int) *User {
 	ctx.DB.First(&user, id)
 	return user
 }
+
+func FindUserByUsername(ctx *data.Context, id string) (*User, error) {
+	var user *User
+	err := ctx.DB.Where("username = ?", id).First(&user).Error
+	return user, err
+}
