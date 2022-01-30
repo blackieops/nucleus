@@ -27,6 +27,10 @@ func (b *FilesystemBackend) Stat(user *auth.User, path string) (fs.FileInfo, err
 	return os.Stat(fullPath)
 }
 
+func (b *FilesystemBackend) ReadFile(file *File) ([]byte, error) {
+	return ioutil.ReadFile(b.userStoragePath(&file.User, file.FullName))
+}
+
 func (b *FilesystemBackend) storagePath(path *string) string {
 	if path == nil {
 		return b.StoragePrefix
