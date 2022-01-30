@@ -3,3 +3,6 @@ base_url: "http://localhost:8888"
 port: 8888
 database_url: "postgresql://postgres:password123@localhost:5444/postgres"
 session_secret: "somelongstring"
+
+# The filesystem path where we should store users' files.
+data_path: "_userdata"

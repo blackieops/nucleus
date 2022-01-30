@@ -11,6 +11,7 @@ type Config struct {
 	Port          int    `yaml:"port"`
 	DatabaseURL   string `yaml:"database_url"`
 	SessionSecret string `yaml:"session_secret"`
+	DataPath      string `yaml:"data_path"`
 }
 
 func LoadConfig(configPath string) (*Config, error) {

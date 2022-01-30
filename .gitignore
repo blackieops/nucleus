@@ -1,3 +1,7 @@
 # Ignore local configuration
 /config.yaml
 /config.test.yaml
+
+# Ignore local test user data directory. Useful for using as a source for
+# testing syncing and whatnot.
+/_userdata
