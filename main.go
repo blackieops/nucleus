@@ -17,6 +17,7 @@ import (
 func main() {
 	configPath := flag.String("config", "config.yaml", "Path to configuration file.")
 	wantIndex := flag.Bool("index", false, "Index the user files on-disk instead of running the server.")
+	wantMigrate := flag.Bool("migrate", false, "Run database migrations instead of running the server.")
 	flag.Parse()
 
 	conf, err := config.LoadConfig(*configPath)
@@ -25,9 +26,13 @@ func main() {
 	}
 
 	dbContext := data.Connect(conf.DatabaseURL)
-	auth.AutoMigrate(dbContext)
-	nxc.AutoMigrate(dbContext)
-	files.AutoMigrate(dbContext)
+
+	if *wantMigrate {
+		auth.AutoMigrate(dbContext)
+		nxc.AutoMigrate(dbContext)
+		files.AutoMigrate(dbContext)
+		return
+	}
 
 	if *wantIndex {
 		fsBackend := &files.FilesystemBackend{DBContext: dbContext, StoragePrefix: conf.DataPath}
