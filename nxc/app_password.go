@@ -1,8 +1,8 @@
 package nxc
 
 import (
-	"fmt"
 	"encoding/hex"
+	"fmt"
 	"math/rand"
 	"strings"
 
@@ -39,7 +39,7 @@ func CreateNextcloudAppPassword(
 
 	// We need to prefix the ID to the password so we have a way to look up
 	// which AppPassword this is when we compare the hash later.
-	session.RawAppPassword = fmt.Sprint(appPassword.ID)+"-"+password
+	session.RawAppPassword = fmt.Sprint(appPassword.ID) + "-" + password
 	session.Username = user.Username
 
 	ctx.DB.Save(session)

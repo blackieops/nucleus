@@ -1,11 +1,11 @@
 package files
 
 import (
+	"crypto/sha1"
+	"fmt"
 	"io/fs"
 	"io/ioutil"
 	"os"
-	"fmt"
-	"crypto/sha1"
 
 	"com.blackieops.nucleus/auth"
 	"com.blackieops.nucleus/data"
