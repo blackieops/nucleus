@@ -81,7 +81,8 @@ func (wr *WebdavRouter) HandleGet(c *gin.Context) {
 	}
 	file, err := files.FindFileByPath(wr.DBContext, user, c.Params.ByName("filePath")[1:])
 	if err != nil {
-		panic(err)
+		c.Status(http.StatusNotFound)
+		return
 	}
 	fileBytes, err := wr.Backend.ReadFile(user, file)
 	if err != nil {
@@ -98,13 +99,17 @@ func (wr *WebdavRouter) HandlePut(c *gin.Context) {
 	}
 	filePath := c.Params.ByName("filePath")[1:]
 	contents, err := ioutil.ReadAll(c.Request.Body)
-	file, err := files.CreateFile(wr.DBContext, &files.File{
+	fileEntity := &files.File{
 		Name:     filepath.Base(filePath),
 		FullName: filePath,
 		Size:     c.Request.ContentLength,
 		User:     *user,
 		Digest:   wr.Backend.FileDigest(user, contents),
-	})
+	}
+	if parentDir, err := files.FindDirByPath(wr.DBContext, user, filepath.Dir(filePath)); err == nil {
+		fileEntity.Parent = parentDir
+	}
+	file, err := files.CreateFile(wr.DBContext, fileEntity)
 	if err != nil {
 		panic(err)
 	}
