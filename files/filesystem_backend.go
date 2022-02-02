@@ -42,6 +42,14 @@ func (b *FilesystemBackend) FileDigest(user *auth.User, contents []byte) string 
 	return fmt.Sprintf("%x", digest[:])
 }
 
+func (b *FilesystemBackend) CreateDirectory(user *auth.User, dir *Directory) error {
+	err := os.Mkdir(b.userStoragePath(user, dir.FullName), 0755)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 func (b *FilesystemBackend) storagePath(path *string) string {
 	if path == nil {
 		return b.StoragePrefix

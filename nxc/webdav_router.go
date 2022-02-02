@@ -55,7 +55,8 @@ func (wr *WebdavRouter) HandlePropfind(c *gin.Context) {
 	} else {
 		dir, err = files.FindDirByPath(wr.DBContext, user, dirPath)
 		if err != nil {
-			panic(err)
+			c.Status(http.StatusNotFound)
+			return
 		}
 	}
 
@@ -113,6 +114,40 @@ func (wr *WebdavRouter) HandlePut(c *gin.Context) {
 	}
 	c.Header("etag", file.Digest)
 	c.Status(http.StatusOK)
+}
+
+func (wr *WebdavRouter) HandleMkcol(c *gin.Context) {
+	user, err := CurrentUser(wr.DBContext, c)
+	if err != nil {
+		panic(err)
+	}
+	filePath := c.Params.ByName("filePath")[1:]
+	_, err = files.FindDirByPath(wr.DBContext, user, filePath)
+	if err == nil {
+		// Bail if the directory already exists to make this idempotent.
+		c.Status(http.StatusOK)
+		return
+	}
+	dir := &files.Directory{
+		Name: filepath.Base(filePath),
+		FullName: filePath,
+		User: *user,
+	}
+	var parentDir *files.Directory
+	parentDir, err = files.FindDirByPath(wr.DBContext, user, filepath.Dir(filePath))
+	if err == nil {
+		dir.Parent = parentDir
+	}
+	err = wr.Backend.CreateDirectory(user, dir)
+	if err != nil {
+		panic(err)
+	}
+	_, err = files.CreateDir(wr.DBContext, dir)
+	if err != nil {
+		c.Status(http.StatusUnprocessableEntity)
+		return
+	}
+	c.Status(http.StatusCreated)
 }
 
 func (wr *WebdavRouter) buildPropfindOptionsFromRequest(c *gin.Context) (*webdav.PropfindOptions, error) {
