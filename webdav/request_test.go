@@ -18,7 +18,7 @@ func TestPropfindRequestUnmarshalsCorrectly(t *testing.T) {
 		</d:prop>
 	</d:propfind>`
 
-	var result PropfindRequest
+	var result propfindRequest
 	err := xml.Unmarshal([]byte(requestBody), &result)
 	if err != nil {
 		t.Errorf("Failed to unmarshal PropfindRequest: %v", err)

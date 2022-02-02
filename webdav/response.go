@@ -1,8 +1,6 @@
 package webdav
 
 import (
-	"encoding/xml"
-	"fmt"
 	"time"
 
 	"com.blackieops.nucleus/auth"
@@ -65,50 +63,13 @@ func BuildDirectoryResponse(
 		// This is required for Nextcloud to work.
 		dirPath = dir.FullName + "/"
 	}
+	okProps, errProps := BuildDirectoryProplist(dir, user, allowProps)
 	return &DavResponse{
-		// TODO: pull out prefix into options somewhere
+		// TODO: pull out path prefix into options somewhere
 		Href: "/nextcloud/remote.php/dav/files/" + user.Username + "/" + dirPath,
 		Propstats: []*DavPropstat{
-			{
-				Props: &DavPropstatList{
-					Props: []*DavProp{
-						{
-							XMLName: xml.Name{Local: "d:getlastmodified"},
-							Value:   dir.UpdatedAt.Format(time.RFC1123),
-						},
-						{
-							XMLName: xml.Name{Local: "d:getetag"},
-							Value:   `"` + dir.UpdatedAt.Format(time.RFC1123) + `"`,
-						},
-						{XMLName: xml.Name{Local: "oc:permissions"}, Value: "RGDNVCK"},
-						{XMLName: xml.Name{Local: "d:resourcetype"}, Value: "<d:collection/>"},
-						{XMLName: xml.Name{Local: "oc:id"}, Value: "nucleus_" + fmt.Sprint(dir.ID)},
-						{XMLName: xml.Name{Local: "oc:fileId"}, Value: fmt.Sprint(dir.ID)},
-						// TODO: keep track of folder size so we can provide it here
-						{XMLName: xml.Name{Local: "oc:size"}, Value: "0"},
-						{XMLName: xml.Name{Local: "oc:share-types"}, Value: ""},
-					},
-				},
-				Status: "HTTP/1.1 200 OK",
-			},
-			{
-				Props: &DavPropstatList{
-					Props: []*DavProp{
-						{XMLName: xml.Name{Local: "oc:downloadURL"}, Value: ""},
-						{XMLName: xml.Name{Local: "oc:dDC"}, Value: ""},
-						{XMLName: xml.Name{Local: "oc:checksums"}, Value: ""},
-						{
-							XMLName: xml.Name{Local: "d:getcontenttype"},
-							Value:   "",
-						},
-						{
-							XMLName: xml.Name{Local: "d:getcontentlength"},
-							Value:   "",
-						},
-					},
-				},
-				Status: "HTTP/1.1 404 Not Found",
-			},
+			{Props: okProps, Status: "HTTP/1.1 200 OK"},
+			{Props: errProps, Status: "HTTP/1.1 404 Not Found"},
 		},
 	}
 }
@@ -118,46 +79,13 @@ func BuildFileResponse(
 	user *auth.User,
 	allowProps []PropfindRequestProp,
 ) *DavResponse {
+	okProps, errProps := BuildFileProplist(f, user, allowProps)
 	return &DavResponse{
-		// TODO: pull out prefix into options somewhere
+		// TODO: pull out path prefix into options somewhere
 		Href: "/nextcloud/remote.php/dav/files/" + user.Username + "/" + f.FullName,
 		Propstats: []*DavPropstat{
-			{
-				Props: &DavPropstatList{
-					Props: []*DavProp{
-						{
-							XMLName: xml.Name{Local: "d:getlastmodified"},
-							Value:   f.UpdatedAt.Format(time.RFC1123),
-						},
-						{XMLName: xml.Name{Local: "oc:permissions"}, Value: "RGDNVW"},
-						{XMLName: xml.Name{Local: "d:resourcetype"}, Value: ""},
-						// TODO: store mimetype on files.File
-						{
-							XMLName: xml.Name{Local: "d:getcontenttype"},
-							Value:   "application/octet-stream",
-						},
-						{
-							XMLName: xml.Name{Local: "d:getcontentlength"},
-							Value:   fmt.Sprint(f.Size),
-						},
-						{XMLName: xml.Name{Local: "d:getetag"}, Value: `"` + f.Digest + `"`},
-						{XMLName: xml.Name{Local: "oc:fileId"}, Value: fmt.Sprint(f.ID)},
-						{XMLName: xml.Name{Local: "oc:id"}, Value: "nucleus_" + fmt.Sprint(f.ID)},
-						{XMLName: xml.Name{Local: "oc:downloadURL"}, Value: ""},
-						{XMLName: xml.Name{Local: "oc:share-types"}, Value: ""},
-					},
-				},
-				Status: "HTTP/1.1 200 OK",
-			},
-			{
-				Props: &DavPropstatList{
-					Props: []*DavProp{
-						{XMLName: xml.Name{Local: "oc:dDC"}, Value: ""},
-						{XMLName: xml.Name{Local: "oc:checksums"}, Value: ""},
-					},
-				},
-				Status: "HTTP/1.1 404 Not Found",
-			},
+			{Props: okProps, Status: "HTTP/1.1 200 OK"},
+			{Props: errProps, Status: "HTTP/1.1 404 Not Found"},
 		},
 	}
 }
