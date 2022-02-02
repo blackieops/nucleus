@@ -33,13 +33,13 @@ func (b *FilesystemBackend) ReadFile(user *auth.User, file *File) ([]byte, error
 	return ioutil.ReadFile(b.userStoragePath(user, file.FullName))
 }
 
-func (b *FilesystemBackend) FileDigest(user *auth.User, file *File) (string, error) {
-	fileBytes, err := b.ReadFile(user, file)
-	if err != nil {
-		return "", err
-	}
-	digest := sha1.Sum(fileBytes)
-	return fmt.Sprintf("%x", digest[:]), nil
+func (b *FilesystemBackend) WriteFile(user *auth.User, file *File, contents []byte) error {
+	return ioutil.WriteFile(b.userStoragePath(user, file.FullName), contents, 0644)
+}
+
+func (b *FilesystemBackend) FileDigest(user *auth.User, contents []byte) string {
+	digest := sha1.Sum(contents)
+	return fmt.Sprintf("%x", digest[:])
 }
 
 func (b *FilesystemBackend) storagePath(path *string) string {

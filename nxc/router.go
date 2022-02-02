@@ -81,6 +81,6 @@ func (n *NextcloudRouter) Mount(r *gin.RouterGroup) {
 	r.Handle("PROPFIND", "/remote.php/dav/files/:username/*filePath", webdavRouter.HandlePropfind)
 	//r.Handle("PROPPATCH", "/remote.php/dav/files/:username/*filePath", forwardToWebdav)
 	r.Handle("GET", "/remote.php/dav/files/:username/*filePath", webdavRouter.HandleGet)
-	//r.Handle("PUT", "/remote.php/dav/files/:username/*filePath", forwardToWebdav)
+	r.Handle("PUT", "/remote.php/dav/files/:username/*filePath", webdavRouter.HandlePut)
 	// TODO: Copy? Move? Delete? Others??
 }

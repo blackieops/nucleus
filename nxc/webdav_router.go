@@ -7,6 +7,7 @@ import (
 	"time"
 	"strconv"
 	"io/ioutil"
+	"path/filepath"
 
 	"com.blackieops.nucleus/data"
 	"com.blackieops.nucleus/files"
@@ -87,6 +88,31 @@ func (wr *WebdavRouter) HandleGet(c *gin.Context) {
 	}
 	c.Header("etag", file.Digest)
 	c.Writer.Write(fileBytes)
+}
+
+func (wr *WebdavRouter) HandlePut(c *gin.Context) {
+	user, err := CurrentUser(wr.DBContext, c)
+	if err != nil {
+		panic(err)
+	}
+	filePath := c.Params.ByName("filePath")[1:]
+	contents, err := ioutil.ReadAll(c.Request.Body)
+	file, err := files.CreateFile(wr.DBContext, &files.File{
+		Name:     filepath.Base(filePath),
+		FullName: filePath,
+		Size:     c.Request.ContentLength,
+		User:     *user,
+		Digest:   wr.Backend.FileDigest(user, contents),
+	})
+	if err != nil {
+		panic(err)
+	}
+	err = wr.Backend.WriteFile(user, file, contents)
+	if err != nil {
+		panic(err)
+	}
+	c.Header("etag", file.Digest)
+	c.Status(http.StatusOK)
 }
 
 func (wr *WebdavRouter) buildPropfindOptionsFromRequest(c *gin.Context) (*webdav.PropfindOptions, error) {
