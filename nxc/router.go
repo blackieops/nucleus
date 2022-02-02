@@ -76,6 +76,10 @@ func (n *NextcloudRouter) Mount(r *gin.RouterGroup) {
 		c.HTML(201, "nextcloud_grant_success.html", gin.H{})
 	})
 
+	r.GET("/ocs/v1.php/cloud/capabilities", func(c *gin.Context) {
+		c.JSON(200, BuildCapabilitiesResponse())
+	})
+
 	webdavRouter := &WebdavRouter{DBContext: n.DBContext, Backend: n.StorageBackend}
 
 	r.Handle("PROPFIND", "/remote.php/dav/files/:username/*filePath", webdavRouter.HandlePropfind)
