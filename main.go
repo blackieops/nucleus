@@ -34,8 +34,8 @@ func main() {
 		return
 	}
 
+	fsBackend := &files.FilesystemBackend{DBContext: dbContext, StoragePrefix: conf.DataPath}
 	if *wantIndex {
-		fsBackend := &files.FilesystemBackend{DBContext: dbContext, StoragePrefix: conf.DataPath}
 		(&files.Crawler{DBContext: dbContext, Backend: fsBackend}).ReindexAll()
 		return
 	}
@@ -47,8 +47,9 @@ func main() {
 	r.Use(sessions.Sessions("nucleussession", sessionStore))
 
 	nextcloudRouter := &nxc.NextcloudRouter{
-		DBContext: dbContext,
-		Config:    conf,
+		DBContext:      dbContext,
+		Config:         conf,
+		StorageBackend: fsBackend,
 	}
 	nextcloudRouter.Mount(r.Group("/nextcloud"))
 

@@ -7,6 +7,30 @@ import (
 	"com.blackieops.nucleus/data"
 )
 
+type CompositeListing struct {
+	// Parent is the directory for under which these files and directories sit
+	Parent *Directory
+
+	// The files in this directory
+	Files []*File
+
+	// The subdirectories of this directory
+	Directories []*Directory
+}
+
+func ListAll(ctx *data.Context, user *auth.User, depth int, dir *Directory) (*CompositeListing, error) {
+	composite := &CompositeListing{Parent: dir}
+	if depth == 0 {
+		// If depth=0 then we only care about the directory, which at this
+		// point should be the only field in the composite, so we can just
+		// return early.
+		return composite, nil
+	}
+	composite.Directories = ListDirectories(ctx, user, dir)
+	composite.Files = ListFiles(ctx, user, dir)
+	return composite, nil
+}
+
 func ListFiles(ctx *data.Context, user *auth.User, dir *Directory) []*File {
 	var entries []*File
 	if dir == nil {

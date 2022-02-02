@@ -4,13 +4,14 @@ import (
 	"com.blackieops.nucleus/auth"
 	"com.blackieops.nucleus/config"
 	"com.blackieops.nucleus/data"
-	"com.blackieops.nucleus/webdav"
+	"com.blackieops.nucleus/files"
 	"github.com/gin-gonic/gin"
 )
 
 type NextcloudRouter struct {
-	DBContext *data.Context
-	Config    *config.Config
+	DBContext      *data.Context
+	Config         *config.Config
+	StorageBackend files.StorageBackend
 }
 
 func (n *NextcloudRouter) Mount(r *gin.RouterGroup) {
@@ -75,13 +76,11 @@ func (n *NextcloudRouter) Mount(r *gin.RouterGroup) {
 		c.HTML(201, "nextcloud_grant_success.html", gin.H{})
 	})
 
-	r.Handle("PROPFIND", "/remote.php/dav/files/:username/*filePath", forwardToWebdav)
-	r.Handle("PROPPATCH", "/remote.php/dav/files/:username/*filePath", forwardToWebdav)
-	r.Handle("GET", "/remote.php/dav/files/:username/*filePath", forwardToWebdav)
-	r.Handle("PUT", "/remote.php/dav/files/:username/*filePath", forwardToWebdav)
-	// TODO: Copy? Move? Delete? Others??
-}
+	webdavRouter := &WebdavRouter{DBContext: n.DBContext, Backend: n.StorageBackend}
 
-func forwardToWebdav(c *gin.Context) {
-	webdav.HandleRequest(c.Writer, c.Request)
+	r.Handle("PROPFIND", "/remote.php/dav/files/:username/*filePath", webdavRouter.HandlePropfind)
+	//r.Handle("PROPPATCH", "/remote.php/dav/files/:username/*filePath", forwardToWebdav)
+	r.Handle("GET", "/remote.php/dav/files/:username/*filePath", webdavRouter.HandleGet)
+	//r.Handle("PUT", "/remote.php/dav/files/:username/*filePath", forwardToWebdav)
+	// TODO: Copy? Move? Delete? Others??
 }
