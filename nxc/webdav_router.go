@@ -157,6 +157,27 @@ func (wr *WebdavRouter) HandleMkcol(c *gin.Context) {
 	c.Status(http.StatusCreated)
 }
 
+func (wr *WebdavRouter) HandleDelete(c *gin.Context) {
+	user, err := CurrentUser(wr.DBContext, c)
+	if err != nil {
+		panic(err)
+	}
+	path := c.Params.ByName("filePath")[1:]
+	err = files.DeletePath(wr.DBContext, user, path)
+	if err != nil {
+		fmt.Printf("Failed to delete files or directory from database: %v\n", err)
+		c.Status(http.StatusUnprocessableEntity)
+		return
+	}
+	err = wr.Backend.DeletePath(user, path)
+	if err != nil {
+		fmt.Printf("Failed to delete path: %v\n", err)
+		c.Status(http.StatusUnprocessableEntity)
+		return
+	}
+	c.Status(http.StatusNoContent)
+}
+
 func (wr *WebdavRouter) HandleChunkMkcol(c *gin.Context) {
 	user, err := CurrentUser(wr.DBContext, c)
 	if err != nil {
