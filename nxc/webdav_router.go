@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"net/url"
 	"path/filepath"
 	"strconv"
 	"strings"
@@ -191,6 +192,12 @@ func (wr *WebdavRouter) HandleChunkMove(c *gin.Context) {
 		c.Request.Header.Get("Destination"),
 		"/nextcloud/remote.php/dav/files/"+user.Username+"/",
 	)
+	dest, err = url.QueryUnescape(dest)
+	if err != nil {
+		fmt.Printf("Error trying to decode path: %v", err)
+		c.Status(http.StatusUnprocessableEntity)
+		return
+	}
 	var dir *files.Directory
 	if filepath.Dir(dest) == "." {
 		dir = nil
