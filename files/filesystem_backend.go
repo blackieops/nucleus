@@ -8,11 +8,9 @@ import (
 	"os"
 
 	"com.blackieops.nucleus/auth"
-	"com.blackieops.nucleus/data"
 )
 
 type FilesystemBackend struct {
-	DBContext     *data.Context
 	StoragePrefix string
 }
 

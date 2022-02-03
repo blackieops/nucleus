@@ -34,7 +34,7 @@ func main() {
 		return
 	}
 
-	fsBackend := &files.FilesystemBackend{DBContext: dbContext, StoragePrefix: conf.DataPath}
+	fsBackend := &files.FilesystemBackend{StoragePrefix: conf.DataPath}
 	if *wantIndex {
 		(&files.Crawler{DBContext: dbContext, Backend: fsBackend}).ReindexAll()
 		return
