@@ -52,7 +52,7 @@ func TestFilesystemBackendWriteReadAndDeleteFile(t *testing.T) {
 		t.Errorf("WriteFile did not write the right content. Got: %s", string(readBack))
 	}
 
-	err = service.DeleteFile(testUser, file)
+	err = service.DeletePath(testUser, file.FullName)
 	if err != nil {
 		t.Errorf("Failed to delete file: %v", err)
 	}
@@ -71,16 +71,19 @@ func TestFilesystemBackendCreateStatAndDeleteDirectory(t *testing.T) {
 	if !stat.IsDir() {
 		t.Errorf("CreateDirectory didn't create a directory.")
 	}
-	err = service.DeleteDirectory(testUser, dir)
+	err = service.DeletePath(testUser, dir.FullName)
 	if err != nil {
 		t.Errorf("Couldn't delete directory that CreateDirectory created: %v", err)
 	}
 }
 
-func TestFilesystemBackendDeleteDirectoryWithEmptyPath(t *testing.T) {
-	dir := &Directory{FullName: ""}
-	err := service.DeleteDirectory(testUser, dir)
+func TestFilesystemBackendDeletePathWithEmptyPath(t *testing.T) {
+	err := service.DeletePath(testUser, "")
 	if err == nil {
-		t.Errorf("DeleteDirectory allowed destroying entire user folder.")
+		t.Errorf("DeletePath allowed destroying entire user folder.")
+	}
+	err = service.DeletePath(testUser, ".")
+	if err == nil {
+		t.Errorf("DeletePath allowed destroying entire user folder.")
 	}
 }

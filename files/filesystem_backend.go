@@ -49,15 +49,11 @@ func (b *FilesystemBackend) CreateDirectory(user *auth.User, dir *Directory) err
 	return nil
 }
 
-func (b *FilesystemBackend) DeleteFile(user *auth.User, file *File) error {
-	return os.Remove(b.userStoragePath(user, file.FullName))
-}
-
-func (b *FilesystemBackend) DeleteDirectory(user *auth.User, dir *Directory) error {
-	if dir.FullName == "" {
+func (b *FilesystemBackend) DeletePath(user *auth.User, path string) error {
+	if path == "" || path == "." {
 		return errors.New("Refusing to delete all files from storage. FullName is empty.")
 	}
-	return os.RemoveAll(b.userStoragePath(user, dir.FullName))
+	return os.RemoveAll(b.userStoragePath(user, path))
 }
 
 func (b *FilesystemBackend) CreateChunkDirectory(user *auth.User, name string) error {
