@@ -41,6 +41,10 @@ func TestDeleteDirectory(t *testing.T) {
 		if err != nil {
 			t.Errorf("Failed to setup test directory: %v", err)
 		}
+		subdir, err := CreateDir(ctx, &Directory{Name: "more things", FullName: "things/more things", User: *user, Parent: dir})
+		if err != nil {
+			t.Errorf("Failed to setup test sub-directory: %v", err)
+		}
 		file, err := CreateFile(ctx, &File{Name: "butt.txt", FullName: "things/butt.txt", User: *user, Parent: dir})
 		if err != nil {
 			t.Errorf("Failed to setup test file: %v", err)
@@ -52,6 +56,10 @@ func TestDeleteDirectory(t *testing.T) {
 		err = ctx.DB.Where("id = ?", file.ID).First(&file).Error
 		if err == nil {
 			t.Errorf("Directory did not delete its files!")
+		}
+		err = ctx.DB.Where("id = ?", subdir.ID).First(&subdir).Error
+		if err == nil {
+			t.Errorf("Directory did not delete its subdirectories!")
 		}
 	})
 }

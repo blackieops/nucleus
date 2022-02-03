@@ -44,7 +44,7 @@ type Directory struct {
 
 	// Optional parent directory to support hierarchy
 	ParentID *int
-	Parent   *Directory
+	Parent   *Directory `gorm:"constraint:OnDelete:CASCADE;"`
 
 	// Owner of this directory
 	UserID int
