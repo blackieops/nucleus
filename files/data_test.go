@@ -55,3 +55,59 @@ func TestDeleteDirectory(t *testing.T) {
 		}
 	})
 }
+
+func TestDeletePathWhenFile(t *testing.T) {
+	testUtils.WithData(func(ctx *data.Context) {
+		AutoMigrate(ctx)
+		auth.AutoMigrate(ctx)
+		user := &auth.User{Name: "Tester", Username: "tester", EmailAddress: "tester@example.com"}
+		user, err := auth.CreateUser(ctx, user)
+		if err != nil {
+			t.Errorf("Failed to setup test user: %v", err)
+		}
+		file, err := CreateFile(ctx, &File{Name: "butt.txt", FullName: "butt.txt", User: *user})
+		if err != nil {
+			t.Errorf("Failed to setup test file: %v", err)
+		}
+
+		err = DeletePath(ctx, user, "butt.txt")
+		if err != nil {
+			t.Errorf("Failed to delete file by path: %v", err)
+		}
+
+		err = ctx.DB.Where("id = ?", file.ID).First(&file).Error
+		if err == nil {
+			t.Errorf("File did not actually get deleted!")
+		}
+	})
+}
+
+func TestDeletePathWhenDirectory(t *testing.T) {
+	testUtils.WithData(func(ctx *data.Context) {
+		AutoMigrate(ctx)
+		auth.AutoMigrate(ctx)
+		user := &auth.User{Name: "Tester", Username: "tester", EmailAddress: "tester@example.com"}
+		user, err := auth.CreateUser(ctx, user)
+		if err != nil {
+			t.Errorf("Failed to setup test user: %v", err)
+		}
+		dir, err := CreateDir(ctx, &Directory{Name: "things", FullName: "things", User: *user})
+		if err != nil {
+			t.Errorf("Failed to setup test directory: %v", err)
+		}
+		file, err := CreateFile(ctx, &File{Name: "butt.txt", FullName: "things/butt.txt", User: *user, Parent: dir})
+		if err != nil {
+			t.Errorf("Failed to setup test file: %v", err)
+		}
+
+		err = DeletePath(ctx, user, "things")
+		if err != nil {
+			t.Errorf("Failed to delete directory by path: %v", err)
+		}
+
+		err = ctx.DB.Where("id = ?", file.ID).First(&file).Error
+		if err == nil {
+			t.Errorf("Directory files did not get deleted!")
+		}
+	})
+}

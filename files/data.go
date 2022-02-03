@@ -77,6 +77,23 @@ func DeleteDirectory(ctx *data.Context, user *auth.User, dir *Directory) error {
 	return ctx.DB.Where("id = ?", dir.ID).Delete(dir).Error
 }
 
+func DeletePath(ctx *data.Context, user *auth.User, path string) error {
+	var entity interface{}
+	var isDir bool = false
+	entity, err := FindFileByPath(ctx, user, path)
+	if err != nil {
+		entity, err = FindDirByPath(ctx, user, path)
+		if err != nil {
+			return err
+		}
+		isDir = true
+	}
+	if isDir {
+		return DeleteDirectory(ctx, user, entity.(*Directory))
+	}
+	return DeleteFile(ctx, user, entity.(*File))
+}
+
 func FindDirByPath(ctx *data.Context, user *auth.User, path string) (*Directory, error) {
 	var file *Directory
 	err := ctx.DB.Where("user_id = ? and full_name = ?", user.ID, path).First(&file).Error
