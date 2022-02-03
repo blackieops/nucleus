@@ -31,3 +31,8 @@ func FindUserByUsername(ctx *data.Context, id string) (*User, error) {
 	err := ctx.DB.Where("username = ?", id).First(&user).Error
 	return user, err
 }
+
+func CreateUser(ctx *data.Context, u *User) (*User, error) {
+	err := ctx.DB.Create(&u).Error
+	return u, err
+}
