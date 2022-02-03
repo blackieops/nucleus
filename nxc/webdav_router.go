@@ -208,7 +208,7 @@ func (wr *WebdavRouter) HandleChunkMove(c *gin.Context) {
 		return
 	}
 	crawler := &files.Crawler{DBContext: wr.DBContext, Backend: wr.Backend}
-	file, err := crawler.DiscoverFile(user, dir, dest)
+	file, err := crawler.DiscoverFile(user, dir, filepath.Base(dest))
 	if err != nil {
 		fmt.Printf("Failed to index reconstructed chunked file: %v", err)
 		c.Status(http.StatusUnprocessableEntity)
