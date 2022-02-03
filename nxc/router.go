@@ -1,9 +1,9 @@
 package nxc
 
 import (
+	"crypto/md5"
 	"fmt"
 	"net/http"
-	"crypto/md5"
 
 	"com.blackieops.nucleus/auth"
 	"com.blackieops.nucleus/config"

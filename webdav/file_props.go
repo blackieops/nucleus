@@ -1,19 +1,19 @@
 package webdav
 
 import (
+	"encoding/xml"
 	"fmt"
 	"time"
-	"encoding/xml"
 
-	"com.blackieops.nucleus/files"
 	"com.blackieops.nucleus/auth"
+	"com.blackieops.nucleus/files"
 )
 
 // A mapping of property name to a function that takes the file and returns the
 // resulting DavProp and a boolean indicating whether or not there is an error.
 // Handlers that return `true` for error will be placed empty in the "404 Not
 // Found" proplist in the webdav response.
-var FilePropHandlers = map[string]func(*files.File)(*DavProp, bool){
+var FilePropHandlers = map[string]func(*files.File) (*DavProp, bool){
 	"getlastmodified": func(f *files.File) (*DavProp, bool) {
 		return &DavProp{XMLName: xml.Name{Local: "d:getlastmodified"}, Value: f.UpdatedAt.Format(time.RFC1123)}, false
 	},

@@ -1,27 +1,27 @@
 package webdav
 
 import (
-	"time"
 	"testing"
+	"time"
 
 	"com.blackieops.nucleus/files"
 )
 
 func TestFilePropHandlers(t *testing.T) {
 	file := &files.File{
-		ID: uint(1234),
-		Name: "test",
-		FullName: "some/test",
-		Size: 69,
-		Digest: "71f4376d6551ba7b3363171bf4dc54e41bc18c5e",
+		ID:        uint(1234),
+		Name:      "test",
+		FullName:  "some/test",
+		Size:      69,
+		Digest:    "71f4376d6551ba7b3363171bf4dc54e41bc18c5e",
 		CreatedAt: time.Date(2022, time.February, 1, 19, 0, 0, 0, time.UTC),
 		UpdatedAt: time.Date(2022, time.February, 1, 19, 0, 0, 0, time.UTC),
 	}
 	table := []struct {
-		key string
-		shouldError bool
+		key             string
+		shouldError     bool
 		expectedTagName string
-		expectedValue string
+		expectedValue   string
 	}{
 		{"getlastmodified", false, "d:getlastmodified", "Tue, 01 Feb 2022 19:00:00 UTC"},
 		{"getetag", false, "d:getetag", `"71f4376d6551ba7b3363171bf4dc54e41bc18c5e"`},
@@ -52,4 +52,3 @@ func TestFilePropHandlers(t *testing.T) {
 		}
 	}
 }
-

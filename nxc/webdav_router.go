@@ -1,14 +1,14 @@
 package nxc
 
 import (
-	"fmt"
 	"encoding/xml"
+	"fmt"
+	"io/ioutil"
 	"net/http"
+	"path/filepath"
+	"strconv"
 	"strings"
 	"time"
-	"strconv"
-	"io/ioutil"
-	"path/filepath"
 
 	"com.blackieops.nucleus/data"
 	"com.blackieops.nucleus/files"
@@ -135,9 +135,9 @@ func (wr *WebdavRouter) HandleMkcol(c *gin.Context) {
 		return
 	}
 	dir := &files.Directory{
-		Name: filepath.Base(filePath),
+		Name:     filepath.Base(filePath),
 		FullName: filePath,
-		User: *user,
+		User:     *user,
 	}
 	var parentDir *files.Directory
 	parentDir, err = files.FindDirByPath(wr.DBContext, user, filepath.Dir(filePath))

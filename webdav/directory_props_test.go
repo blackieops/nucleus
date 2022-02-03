@@ -1,25 +1,25 @@
 package webdav
 
 import (
-	"time"
 	"testing"
+	"time"
 
 	"com.blackieops.nucleus/files"
 )
 
 func TestDirectoryPropHandlers(t *testing.T) {
 	dir := &files.Directory{
-		ID: uint(1234),
-		Name: "test",
-		FullName: "some/test",
+		ID:        uint(1234),
+		Name:      "test",
+		FullName:  "some/test",
 		CreatedAt: time.Date(2022, time.February, 1, 19, 0, 0, 0, time.UTC),
 		UpdatedAt: time.Date(2022, time.February, 1, 19, 0, 0, 0, time.UTC),
 	}
 	table := []struct {
-		key string
-		shouldError bool
+		key             string
+		shouldError     bool
 		expectedTagName string
-		expectedValue string
+		expectedValue   string
 	}{
 		{"getlastmodified", false, "d:getlastmodified", "Tue, 01 Feb 2022 19:00:00 UTC"},
 		{"getetag", false, "d:getetag", `"Tue, 01 Feb 2022 19:00:00 UTC"`},
@@ -50,4 +50,3 @@ func TestDirectoryPropHandlers(t *testing.T) {
 		}
 	}
 }
-

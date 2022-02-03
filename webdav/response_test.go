@@ -35,9 +35,9 @@ func TestBuildMultiResponse(t *testing.T) {
 	}
 
 	composite := &files.CompositeListing{
-		Parent: directory,
+		Parent:      directory,
 		Directories: []*files.Directory{},
-		Files: []*files.File{file},
+		Files:       []*files.File{file},
 	}
 
 	props := []PropfindRequestProp{

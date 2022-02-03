@@ -74,7 +74,7 @@ func (b *FilesystemBackend) ReconstructChunks(user *auth.User, srcDir string, de
 		return err
 	}
 	for _, chunk := range chunks {
-		chunkBytes, err := ioutil.ReadFile(uploadDir+"/"+chunk.Name())
+		chunkBytes, err := ioutil.ReadFile(uploadDir + "/" + chunk.Name())
 		if err != nil {
 			return err
 		}
