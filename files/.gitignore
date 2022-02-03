@@ -1,0 +1,4 @@
+# Ignore test suite data directory, except for a few fixture files we keep in
+# there to test listing existing things.
+internal/_testdata/test/files/*
+!internal/_testdata/test/files/Pictures
