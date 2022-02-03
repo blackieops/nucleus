@@ -38,5 +38,8 @@ jobs:
     - name: Build
       run: go build -v ./...
 
+    - name: Prepare database
+      run: go run . -config config.test.yaml -migrate
+
     - name: Test
       run: go test -v ./...

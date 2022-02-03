@@ -9,7 +9,6 @@ import (
 
 func TestFindUserByUsername(t *testing.T) {
 	testUtils.WithData(func(ctx *data.Context) {
-		AutoMigrate(ctx)
 		CreateUser(ctx, &User{Username: "admin", Name: "Admin", EmailAddress: "A@example.com"})
 
 		user, err := FindUserByUsername(ctx, "admin")
@@ -29,7 +28,6 @@ func TestFindUserByUsername(t *testing.T) {
 
 func TestCreateUser(t *testing.T) {
 	testUtils.WithData(func(ctx *data.Context) {
-		AutoMigrate(ctx)
 		user, err := CreateUser(ctx, &User{
 			Name: "Tester",
 			Username: "test",

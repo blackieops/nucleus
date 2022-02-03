@@ -10,8 +10,6 @@ import (
 
 func TestDeleteFile(t *testing.T) {
 	testUtils.WithData(func(ctx *data.Context) {
-		AutoMigrate(ctx)
-		auth.AutoMigrate(ctx)
 		user := &auth.User{Name: "Tester", Username: "tester", EmailAddress: "tester@example.com"}
 		user, err := auth.CreateUser(ctx, user)
 		if err != nil {
@@ -30,8 +28,6 @@ func TestDeleteFile(t *testing.T) {
 
 func TestDeleteDirectory(t *testing.T) {
 	testUtils.WithData(func(ctx *data.Context) {
-		AutoMigrate(ctx)
-		auth.AutoMigrate(ctx)
 		user := &auth.User{Name: "Tester", Username: "tester", EmailAddress: "tester@example.com"}
 		user, err := auth.CreateUser(ctx, user)
 		if err != nil {
@@ -66,8 +62,6 @@ func TestDeleteDirectory(t *testing.T) {
 
 func TestDeletePathWhenFile(t *testing.T) {
 	testUtils.WithData(func(ctx *data.Context) {
-		AutoMigrate(ctx)
-		auth.AutoMigrate(ctx)
 		user := &auth.User{Name: "Tester", Username: "tester", EmailAddress: "tester@example.com"}
 		user, err := auth.CreateUser(ctx, user)
 		if err != nil {
@@ -92,8 +86,6 @@ func TestDeletePathWhenFile(t *testing.T) {
 
 func TestDeletePathWhenDirectory(t *testing.T) {
 	testUtils.WithData(func(ctx *data.Context) {
-		AutoMigrate(ctx)
-		auth.AutoMigrate(ctx)
 		user := &auth.User{Name: "Tester", Username: "tester", EmailAddress: "tester@example.com"}
 		user, err := auth.CreateUser(ctx, user)
 		if err != nil {
