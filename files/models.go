@@ -15,7 +15,7 @@ type File struct {
 
 	// Optional association to a Directory
 	ParentID *uint
-	Parent   *Directory
+	Parent   *Directory `gorm:"constraint:OnDelete:CASCADE;"`
 
 	// Association to the user who owns this file
 	UserID uint
