@@ -50,6 +50,42 @@ func (b *FilesystemBackend) CreateDirectory(user *auth.User, dir *Directory) err
 	return nil
 }
 
+func (b *FilesystemBackend) CreateChunkDirectory(user *auth.User, name string) error {
+	err := os.Mkdir(b.userUploadsPath(user, name), 0755)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (b *FilesystemBackend) WriteChunk(user *auth.User, name string, contents []byte) error {
+	return ioutil.WriteFile(b.userUploadsPath(user, name), contents, 0644)
+}
+
+func (b *FilesystemBackend) ReconstructChunks(user *auth.User, srcDir string, destPath string) error {
+	destFile, err := os.Create(b.userStoragePath(user, destPath))
+	if err != nil {
+		return err
+	}
+	defer destFile.Close()
+	uploadDir := b.userUploadsPath(user, srcDir)
+	chunks, err := ioutil.ReadDir(uploadDir)
+	if err != nil {
+		return err
+	}
+	for _, chunk := range chunks {
+		chunkBytes, err := ioutil.ReadFile(uploadDir+"/"+chunk.Name())
+		if err != nil {
+			return err
+		}
+		_, err = destFile.Write(chunkBytes)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 func (b *FilesystemBackend) storagePath(path *string) string {
 	if path == nil {
 		return b.StoragePrefix
@@ -61,5 +97,11 @@ func (b *FilesystemBackend) storagePath(path *string) string {
 func (b *FilesystemBackend) userStoragePath(user *auth.User, path string) string {
 	sep := string(os.PathSeparator)
 	filesBasePath := user.Username + sep + "files" + sep + path
+	return b.storagePath(&filesBasePath)
+}
+
+func (b *FilesystemBackend) userUploadsPath(user *auth.User, path string) string {
+	sep := string(os.PathSeparator)
+	filesBasePath := user.Username + sep + "uploads" + sep + path
 	return b.storagePath(&filesBasePath)
 }

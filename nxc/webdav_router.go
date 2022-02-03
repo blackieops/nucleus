@@ -1,6 +1,7 @@
 package nxc
 
 import (
+	"fmt"
 	"encoding/xml"
 	"net/http"
 	"strings"
@@ -152,6 +153,76 @@ func (wr *WebdavRouter) HandleMkcol(c *gin.Context) {
 		c.Status(http.StatusUnprocessableEntity)
 		return
 	}
+	c.Status(http.StatusCreated)
+}
+
+func (wr *WebdavRouter) HandleChunkMkcol(c *gin.Context) {
+	user, err := CurrentUser(wr.DBContext, c)
+	if err != nil {
+		panic(err)
+	}
+	name := filepath.Base(c.Params.ByName("filePath")[1:])
+	wr.Backend.CreateChunkDirectory(user, name)
+	c.Status(http.StatusCreated)
+}
+
+func (wr *WebdavRouter) HandleChunkPut(c *gin.Context) {
+	user, err := CurrentUser(wr.DBContext, c)
+	if err != nil {
+		panic(err)
+	}
+	contents, err := ioutil.ReadAll(c.Request.Body)
+	if err != nil {
+		panic(err)
+	}
+	err = wr.Backend.WriteChunk(user, c.Params.ByName("filePath")[1:], contents)
+	if err != nil {
+		c.Status(http.StatusUnprocessableEntity)
+		return
+	}
+}
+
+func (wr *WebdavRouter) HandleChunkMove(c *gin.Context) {
+	user, err := CurrentUser(wr.DBContext, c)
+	if err != nil {
+		panic(err)
+	}
+	dest := strings.TrimPrefix(
+		c.Request.Header.Get("Destination"),
+		"/nextcloud/remote.php/dav/files/"+user.Username+"/",
+	)
+	var dir *files.Directory
+	if filepath.Dir(dest) == "." {
+		dir = nil
+	} else {
+		dir, err = files.FindDirByPath(wr.DBContext, user, filepath.Dir(dest))
+		if err != nil {
+			c.Status(http.StatusNotFound)
+			return
+		}
+	}
+	err = wr.Backend.ReconstructChunks(user, filepath.Dir(c.Params.ByName("filePath")[1:]), dest)
+	if err != nil {
+		fmt.Printf("Failed to reconstruct chunked upload: %v\n", err)
+		c.Status(http.StatusUnprocessableEntity)
+		return
+	}
+	crawler := &files.Crawler{DBContext: wr.DBContext, Backend: wr.Backend}
+	file, err := crawler.DiscoverFile(user, dir, dest)
+	if err != nil {
+		fmt.Printf("Failed to index reconstructed chunked file: %v", err)
+		c.Status(http.StatusUnprocessableEntity)
+		return
+	}
+	file, err = files.CreateFile(wr.DBContext, file)
+	if err != nil {
+		fmt.Printf("Failed to save reconstructed chunked file in database: %v", err)
+		c.Status(http.StatusUnprocessableEntity)
+		return
+	}
+	c.Header("etag", file.Digest)
+	c.Header("OC-FileID", fmt.Sprint(file.ID))
+	c.Header("Location", "/nextcloud/remote.php/dav/files/"+user.Username+"/"+file.FullName)
 	c.Status(http.StatusCreated)
 }
 
