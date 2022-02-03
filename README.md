@@ -28,3 +28,63 @@ storage and sync backend.
    server resources as possible.
 
 [nc]: https://www.nextcloud.com
+
+## Development Setup
+
+Nucleus is a [Go][go] application, using Go modules for dependency management.
+
+[go]: https://go.dev
+
+A `docker-compose.yml` is provided to run the dependent services (i.e.,
+postgresql). Use any Docker Compose-compatible tool to get that started:
+
+```
+$ docker compose up -d
+```
+
+First fetch and install dependencies:
+
+```
+$ go mod tidy
+```
+
+Then set up your config file. An example is provided:
+
+```
+$ cp config.yaml.example config.yaml
+```
+
+Once configured, you can migrate the database:
+
+```
+$ go run . -migrate
+```
+
+And then run the project:
+
+```
+$ go run .
+```
+
+### Testing
+
+A test suite is provided. It uses a separate config file to separate it from
+the "normal" runtime.
+
+```
+$ cp config.yaml.example config.test.yaml
+```
+
+Edit the `config.test.yaml` to point to a different database, for best results.
+
+Then migrate the test database:
+
+```
+$ go run . -config config.test.yaml -migrate
+```
+
+And then you can run the test suite for everything:
+
+```
+$ go test ./...
+```
