@@ -1,6 +1,10 @@
 package nxc
 
 import (
+	"fmt"
+	"net/http"
+	"crypto/md5"
+
 	"com.blackieops.nucleus/auth"
 	"com.blackieops.nucleus/config"
 	"com.blackieops.nucleus/data"
@@ -78,6 +82,32 @@ func (n *NextcloudRouter) Mount(r *gin.RouterGroup) {
 
 	r.GET("/ocs/v1.php/cloud/capabilities", func(c *gin.Context) {
 		c.JSON(200, BuildCapabilitiesResponse())
+	})
+
+	r.GET("/remote.php/dav/avatars/:username/:size.png", func(c *gin.Context) {
+		user, err := CurrentUser(n.DBContext, c)
+		if err != nil {
+			c.Status(http.StatusNotFound)
+			return
+		}
+		gravatarUrl := fmt.Sprintf(
+			"https://www.gravatar.com/avatar/%x?s=%s",
+			md5.Sum([]byte(user.EmailAddress)),
+			c.Params.ByName("size"),
+		)
+		response, err := http.Get(gravatarUrl)
+		if err != nil {
+			c.Status(http.StatusBadGateway)
+			return
+		}
+		reader := response.Body
+		defer reader.Close()
+		contentLength := response.ContentLength
+		contentType := response.Header.Get("Content-Type")
+		extraHeaders := map[string]string{
+			"Content-Disposition": `attachment; filename="avatar.png"`,
+		}
+		c.DataFromReader(http.StatusOK, contentLength, contentType, reader, extraHeaders)
 	})
 
 	webdavRouter := &WebdavRouter{DBContext: n.DBContext, Backend: n.StorageBackend}
