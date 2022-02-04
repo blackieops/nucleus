@@ -2,7 +2,6 @@ package nxc
 
 import (
 	"com.blackieops.nucleus/data"
-	"errors"
 	"gorm.io/gorm"
 )
 
@@ -27,39 +26,33 @@ type NextcloudAuthSession struct {
 	Username string
 }
 
-func CreateNextcloudAuthSession(ctx *data.Context) *NextcloudAuthSession {
+func CreateNextcloudAuthSession(ctx *data.Context) (*NextcloudAuthSession, error) {
 	session := &NextcloudAuthSession{
 		PollToken:  generateNextcloudToken(64),
 		LoginToken: generateNextcloudToken(64),
 	}
-	ctx.DB.Create(session)
-	return session
+	err := ctx.DB.Create(session).Error
+	return session, err
 }
 
 func FindNextcloudAuthSessionByPollToken(ctx *data.Context, token string) (*NextcloudAuthSession, error) {
 	var session *NextcloudAuthSession
-	ctx.DB.Where("poll_token = ?", token).First(&session)
-
-	if session.ID != 0 {
-		return session, nil
-	} else {
-		return &NextcloudAuthSession{}, errors.New("Could not find session.")
+	err := ctx.DB.Where("poll_token = ?", token).First(&session).Error
+	if err != nil{
+		return nil, err
 	}
+	return session, nil
 }
 
 func FindNextcloudAuthSessionByLoginToken(ctx *data.Context, token string) (*NextcloudAuthSession, error) {
 	var session *NextcloudAuthSession
-	ctx.DB.Where("login_token = ?", token).First(&session)
-
-	if session.ID != 0 {
-		return session, nil
-	} else {
-		return &NextcloudAuthSession{}, errors.New("Could not find session.")
+	err := ctx.DB.Where("login_token = ?", token).First(&session).Error
+	if err != nil {
+		return nil, err
 	}
+	return session, nil
 }
 
 func DestroyNextcloudAuthSession(ctx *data.Context, session *NextcloudAuthSession) error {
-	ctx.DB.Delete(session)
-	// TODO: errors?
-	return nil
+	return ctx.DB.Delete(session).Error
 }

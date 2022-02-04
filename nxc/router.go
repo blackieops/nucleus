@@ -36,7 +36,11 @@ func (n *NextcloudRouter) Mount(r *gin.RouterGroup) {
 	})
 
 	r.POST("/index.php/login/v2", func(c *gin.Context) {
-		session := CreateNextcloudAuthSession(n.DBContext)
+		session, err := CreateNextcloudAuthSession(n.DBContext)
+		if err != nil {
+			c.JSON(http.StatusUnprocessableEntity, gin.H{"error": err.Error()})
+			return
+		}
 		payload := &PollResponse{
 			Poll: PollEndpoint{
 				Token:       session.PollToken,

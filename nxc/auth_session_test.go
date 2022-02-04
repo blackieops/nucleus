@@ -9,7 +9,10 @@ import (
 
 func TestCreateNextcloudAuthSession(t *testing.T) {
 	testUtils.WithData(func(c *data.Context) {
-		s := CreateNextcloudAuthSession(c)
+		s, err := CreateNextcloudAuthSession(c)
+		if err != nil {
+			t.Errorf("Failed to create a NextcloudAuthSession: %v", err)
+		}
 		if s.LoginToken == s.PollToken {
 			t.Errorf("NextcloudAuthSession's Poll and Login tokens were identical.")
 		}
@@ -24,7 +27,10 @@ func TestCreateNextcloudAuthSession(t *testing.T) {
 
 func TestFindNextcloudAuthSessionByPollToken(t *testing.T) {
 	testUtils.WithData(func(c *data.Context) {
-		s := CreateNextcloudAuthSession(c)
+		s, err := CreateNextcloudAuthSession(c)
+		if err != nil {
+			t.Errorf("Test setup failed to create a NextcloudAuthSession: %v", err)
+		}
 		found, err := FindNextcloudAuthSessionByPollToken(c, s.PollToken)
 		if err != nil {
 			t.Errorf("Failed to find NextcloudAuthSession: %v", err)
@@ -41,7 +47,10 @@ func TestFindNextcloudAuthSessionByPollToken(t *testing.T) {
 
 func TestFindNextcloudAuthSessionByLoginToken(t *testing.T) {
 	testUtils.WithData(func(c *data.Context) {
-		s := CreateNextcloudAuthSession(c)
+		s, err := CreateNextcloudAuthSession(c)
+		if err != nil {
+			t.Errorf("Test setup failed to create a NextcloudAuthSession: %v", err)
+		}
 		found, err := FindNextcloudAuthSessionByLoginToken(c, s.LoginToken)
 		if err != nil {
 			t.Errorf("Failed to find NextcloudAuthSession: %v", err)
@@ -58,10 +67,17 @@ func TestFindNextcloudAuthSessionByLoginToken(t *testing.T) {
 
 func TestDestroyNextcloudAuthSession(t *testing.T) {
 	testUtils.WithData(func(c *data.Context) {
-		s := CreateNextcloudAuthSession(c)
-		err := DestroyNextcloudAuthSession(c, s)
+		s, err := CreateNextcloudAuthSession(c)
+		if err != nil {
+			t.Errorf("Test setup failed to create a NextcloudAuthSession: %v", err)
+		}
+		err = DestroyNextcloudAuthSession(c, s)
 		if err != nil {
 			t.Errorf("Failed to destroy NextcloudAuthSession: %v", err)
+		}
+		err = DestroyNextcloudAuthSession(c, &NextcloudAuthSession{})
+		if err == nil {
+			t.Errorf("Should not have destroyed invalid NextcloudAuthSession: %v", err)
 		}
 	})
 }
