@@ -23,7 +23,7 @@ func WithData(block func(*data.Context)) {
 		panic(err)
 	}
 	db.Transaction(func(tx *gorm.DB) error {
-		block(&data.Context{DB: db})
+		block(&data.Context{DB: tx})
 		return errors.New("End of test!")
 	})
 }
