@@ -1,0 +1,7 @@
+---
+base_url: "https://localhost:443"
+port: 8888
+database_url: "postgresql://postgres:password123@localhost:5444/postgres"
+session_secret: "somelongstring"
+data_path: "/var/db/nucleus_data"
+not_a_known_key: "should be ignored!"
