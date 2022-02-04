@@ -25,7 +25,11 @@ func (a *AuthRouter) Mount(r *gin.RouterGroup) {
 			return
 		}
 
-		user := FindUser(a.DBContext, userId)
+		user, err := FindUser(a.DBContext, uint(userId))
+		if err != nil {
+			c.AbortWithStatus(404)
+			return
+		}
 		session := sessions.Default(c)
 		session.Set("CurrentUserID", user.ID)
 		session.Save()

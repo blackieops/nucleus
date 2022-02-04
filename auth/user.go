@@ -20,10 +20,10 @@ func FindAllUsers(ctx *data.Context) []*User {
 	return users
 }
 
-func FindUser(ctx *data.Context, id int) *User {
+func FindUser(ctx *data.Context, id uint) (*User, error) {
 	var user *User
-	ctx.DB.First(&user, id)
-	return user
+	err := ctx.DB.First(&user, id).Error
+	return user, err
 }
 
 func FindUserByUsername(ctx *data.Context, id string) (*User, error) {

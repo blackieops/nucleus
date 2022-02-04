@@ -24,8 +24,8 @@ func (r *AuthMiddleware) EnsureSession(c *gin.Context) {
 	}
 }
 
-func CurrentUser(c *data.Context, g *gin.Context) *User {
+func CurrentUser(c *data.Context, g *gin.Context) (*User, error) {
 	session := sessions.Default(g)
 	userID := session.Get("CurrentUserID").(uint)
-	return FindUser(c, int(userID))
+	return FindUser(c, userID)
 }

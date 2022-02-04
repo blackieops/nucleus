@@ -29,7 +29,10 @@ func TestFindUser(t *testing.T) {
 		if err != nil {
 			t.Errorf("Failed to set up user: %v", err)
 		}
-		found := FindUser(ctx, int(user.ID))
+		found, err := FindUser(ctx, user.ID)
+		if err != nil {
+			t.Errorf("Failed to find user: %v", err)
+		}
 		if found.ID != user.ID {
 			t.Errorf("Found incorrect user: %d instead of %d", found.ID, user.ID)
 		}
