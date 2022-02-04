@@ -1,8 +1,6 @@
 package files
 
 import (
-	"errors"
-
 	"com.blackieops.nucleus/auth"
 	"com.blackieops.nucleus/data"
 )
@@ -53,20 +51,14 @@ func ListDirectories(ctx *data.Context, user *auth.User, dir *Directory) []*Dire
 
 func FindFile(ctx *data.Context, id int) (*File, error) {
 	var file *File
-	ctx.DB.First(&file, id)
-	if file == nil {
-		return &File{}, errors.New("Could not find file.")
-	}
-	return file, nil
+	err := ctx.DB.First(&file, id).Error
+	return file, err
 }
 
 func FindFileByPath(ctx *data.Context, user *auth.User, path string) (*File, error) {
 	var file *File
 	err := ctx.DB.Where("user_id = ? and full_name = ?", user.ID, path).First(&file).Error
-	if err != nil {
-		return nil, err
-	}
-	return file, nil
+	return file, err
 }
 
 func DeleteFile(ctx *data.Context, user *auth.User, file *File) error {
