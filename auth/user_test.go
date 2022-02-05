@@ -61,8 +61,8 @@ func TestFindUserByUsername(t *testing.T) {
 func TestCreateUser(t *testing.T) {
 	testUtils.WithData(func(ctx *data.Context) {
 		user, err := CreateUser(ctx, &User{
-			Name: "Tester",
-			Username: "test",
+			Name:         "Tester",
+			Username:     "test",
 			EmailAddress: "test@example.com",
 		})
 		if err != nil {

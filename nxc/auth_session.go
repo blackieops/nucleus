@@ -38,7 +38,7 @@ func CreateNextcloudAuthSession(ctx *data.Context) (*NextcloudAuthSession, error
 func FindNextcloudAuthSessionByPollToken(ctx *data.Context, token string) (*NextcloudAuthSession, error) {
 	var session *NextcloudAuthSession
 	err := ctx.DB.Where("poll_token = ?", token).First(&session).Error
-	if err != nil{
+	if err != nil {
 		return nil, err
 	}
 	return session, nil

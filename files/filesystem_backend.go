@@ -1,8 +1,8 @@
 package files
 
 import (
-	"errors"
 	"crypto/sha1"
+	"errors"
 	"fmt"
 	"io/fs"
 	"io/ioutil"

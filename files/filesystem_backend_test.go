@@ -1,8 +1,8 @@
 package files
 
 import (
-	"testing"
 	"regexp"
+	"testing"
 
 	"com.blackieops.nucleus/auth"
 )
@@ -12,10 +12,11 @@ var service StorageBackend = &FilesystemBackend{StoragePrefix: "internal/_testda
 
 func TestFilesystemBackendList(t *testing.T) {
 	entries := service.List(testUser, "Pictures")
-	if len(entries) != 2 { t.Errorf("List returned incorrect entry count: %d", len(entries))
+	if len(entries) != 2 {
+		t.Errorf("List returned incorrect entry count: %d", len(entries))
 	}
 	for _, e := range entries {
-		matched, err :=  regexp.MatchString(`(.*)\.png`, e.Name())
+		matched, err := regexp.MatchString(`(.*)\.png`, e.Name())
 		if !matched || err != nil {
 			t.Errorf("List returned more than just the expected pngs.")
 		}
