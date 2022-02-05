@@ -9,9 +9,9 @@ type User struct {
 	ID           uint `gorm:"primaryKey"`
 	CreatedAt    time.Time
 	UpdatedAt    time.Time
-	Username     string `gorm:"index"`
+	Username     string `gorm:"uniqueIndex"`
 	Name         string
-	EmailAddress string `gorm:"index"`
+	EmailAddress string `gorm:"uniqueIndex"`
 }
 
 func FindAllUsers(ctx *data.Context) []*User {
