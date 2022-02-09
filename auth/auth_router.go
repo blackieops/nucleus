@@ -4,6 +4,7 @@ import (
 	"strconv"
 
 	"com.blackieops.nucleus/data"
+	"com.blackieops.nucleus/internal/csrf"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 )
@@ -13,12 +14,13 @@ type AuthRouter struct {
 }
 
 func (a *AuthRouter) Mount(r *gin.RouterGroup) {
-	r.GET("/login", func(c *gin.Context) {
+	r.GET("/login", csrf.Generate(), func(c *gin.Context) {
 		users := FindAllUsers(a.DBContext)
-		c.HTML(200, "auth_login.html", gin.H{"users": users})
+		s := sessions.Default(c)
+		c.HTML(200, "auth_login.html", gin.H{"users": users, "csrfToken": s.Get("CSRFToken")})
 	})
 
-	r.POST("/login", func(c *gin.Context) {
+	r.POST("/login", csrf.Validate(), func(c *gin.Context) {
 		userId, err := strconv.Atoi(c.PostForm("UserID"))
 		if err != nil {
 			c.AbortWithStatus(422)

@@ -2,6 +2,8 @@
 
 <!-- this is of course very fake just for early stage testing. -->
 <form action="" method="POST">
+	<input type="hidden" name="_csrf" value="{{ .csrfToken }}">
+
 	{{ range .users }}
 	<div>
 		<label>
