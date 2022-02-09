@@ -24,9 +24,12 @@ func CreateNextcloudAppPassword(
 	session *NextcloudAuthSession,
 	user *auth.User,
 ) (*NextcloudAppPassword, error) {
-	password := generateNextcloudToken(64)
-	// TODO: parameterize cost into config value?
-	digest, err := bcrypt.GenerateFromPassword([]byte(password), 10)
+	password := generateNextcloudToken(32)
+	// We use a low cost here because these are very long random strings, and
+	// these are easy and safe to rotate in the face of a disasterous security
+	// event. It's mostly just a deterrent to buy time to rotate everything,
+	// not to protect an entire account forever.
+	digest, err := bcrypt.GenerateFromPassword([]byte(password), 5)
 	if err != nil {
 		panic(err)
 	}
