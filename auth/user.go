@@ -12,6 +12,7 @@ type User struct {
 	Username     string `gorm:"uniqueIndex"`
 	Name         string
 	EmailAddress string `gorm:"uniqueIndex"`
+	Credentials  []*Credential
 }
 
 func FindAllUsers(ctx *data.Context) []*User {
