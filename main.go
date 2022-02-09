@@ -18,6 +18,7 @@ func main() {
 	configPath := flag.String("config", "config.yaml", "Path to configuration file.")
 	wantIndex := flag.Bool("index", false, "Index the user files on-disk instead of running the server.")
 	wantMigrate := flag.Bool("migrate", false, "Run database migrations instead of running the server.")
+	wantSeeds := flag.Bool("seed", false, "Insert test data into the database.")
 	flag.Parse()
 
 	conf, err := config.LoadConfig(*configPath)
@@ -31,6 +32,11 @@ func main() {
 		auth.AutoMigrate(dbContext)
 		nxc.AutoMigrate(dbContext)
 		files.AutoMigrate(dbContext)
+		return
+	}
+
+	if *wantSeeds {
+		seedData(dbContext)
 		return
 	}
 

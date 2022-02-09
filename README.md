@@ -66,6 +66,17 @@ And then run the project:
 $ go run .
 ```
 
+### Test Data
+
+If you want to start off with a test user, credentials, and possibly other
+placeholder data, you can run the seeds:
+
+```
+$ go run . -seed
+```
+
+The default user is `admin` with a password credential of `password123`.
+
 ### Testing
 
 A test suite is provided. It uses a separate config file to separate it from
