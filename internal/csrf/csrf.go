@@ -19,13 +19,13 @@ func Generate() gin.HandlerFunc {
 func Validate() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		s := sessions.Default(c)
-		token := s.Get("CSRFToken").(string)
-		if token == "" {
+		token := s.Get("CSRFToken")
+		if token == nil {
 			c.AbortWithStatus(400)
 			return
 		}
 		paramsToken := c.PostForm("_csrf")
-		if token != paramsToken {
+		if token.(string) != paramsToken {
 			c.AbortWithStatus(401)
 		}
 	}
