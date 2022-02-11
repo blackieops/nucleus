@@ -1,17 +1,17 @@
-<h1>login</h1>
+<h1>Log In</h1>
 
-<!-- this is of course very fake just for early stage testing. -->
 <form action="" method="POST">
 	<input type="hidden" name="_csrf" value="{{ .csrfToken }}">
 
-	{{ range .users }}
-	<div>
-		<label>
-			<input type="radio" name="UserID" value="{{ .ID }}">
-			({{ .ID }}) {{ .Username }}
-		</label>
-	</div>
-	{{ end }}
+	<p>
+		<label for="usernameField">Username</label><br>
+		<input id="usernameField" type="text" name="username" placeholder="Username">
+	</p>
+
+	<p>
+		<label for="passwordField">Password</label><br>
+		<input id="passwordField" type="password" name="password" placeholder="Password">
+	</p>
 
 	<p>
 		<input type="submit" value="Log In">

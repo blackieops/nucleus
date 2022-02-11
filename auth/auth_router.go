@@ -1,8 +1,6 @@
 package auth
 
 import (
-	"strconv"
-
 	"com.blackieops.nucleus/data"
 	"com.blackieops.nucleus/internal/csrf"
 	"github.com/gin-contrib/sessions"
@@ -15,23 +13,37 @@ type AuthRouter struct {
 
 func (a *AuthRouter) Mount(r *gin.RouterGroup) {
 	r.GET("/login", csrf.Generate(), func(c *gin.Context) {
-		users := FindAllUsers(a.DBContext)
 		s := sessions.Default(c)
-		c.HTML(200, "auth_login.html", gin.H{"users": users, "csrfToken": s.Get("CSRFToken")})
+		c.HTML(200, "auth_login.html", gin.H{"csrfToken": s.Get("CSRFToken")})
 	})
 
 	r.POST("/login", csrf.Validate(), func(c *gin.Context) {
-		userId, err := strconv.Atoi(c.PostForm("UserID"))
+		user, err := FindUserByUsername(a.DBContext, c.PostForm("username"))
 		if err != nil {
-			c.AbortWithStatus(422)
+			// We still run through a "fake" credential validation to prevent
+			// leaking credential/user existence through response time
+			// variance.
+			ValidateCredential(&Credential{}, "burnsometime")
+			c.AbortWithStatus(404)
 			return
 		}
-
-		user, err := FindUser(a.DBContext, uint(userId))
+		credentials, err := FindUserCredentials(a.DBContext, user)
 		if err != nil {
 			c.AbortWithStatus(404)
 			return
 		}
+		credential, err := FilterFirstCredentialOfType(credentials, CredentialTypePassword)
+		if err != nil {
+			c.AbortWithStatus(404)
+			return
+		}
+
+		err = ValidateCredential(credential, c.PostForm("password"))
+		if err != nil {
+			c.AbortWithStatus(404)
+			return
+		}
+
 		session := sessions.Default(c)
 		session.Set("CurrentUserID", user.ID)
 		session.Save()

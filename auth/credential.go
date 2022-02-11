@@ -59,3 +59,14 @@ func DeleteCredential(c *data.Context, credential *Credential) error {
 func ValidateCredential(c *Credential, data string) error {
 	return bcrypt.CompareHashAndPassword([]byte(c.DataDigest), []byte(data))
 }
+
+// RIP generics
+// Filter a slice of Credentials to find the first of a particular type.
+func FilterFirstCredentialOfType(cs []*Credential, t int) (*Credential, error) {
+	for _, c := range cs {
+		if c.Type == t {
+			return c, nil
+		}
+	}
+	return nil, errors.New("No credential found for type.")
+}

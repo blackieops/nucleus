@@ -135,3 +135,27 @@ func TestDeleteCredential(t *testing.T) {
 		}
 	})
 }
+
+func TestFilterFirstCredentialOfType(t *testing.T) {
+	testUtils.WithData(func(c *data.Context) {
+		credentials := []*Credential{
+			{Type: 999, ID: 321, Data: "xyz987"},
+			{Type: CredentialTypePassword, ID: 123, Data: "abc123"},
+		}
+
+		// When a credential is found for the given type
+		credential, err := FilterFirstCredentialOfType(credentials, CredentialTypePassword)
+		if err != nil {
+			t.Errorf("Encountered unexpected error: %v", err)
+		}
+		if credential.ID != 123 {
+			t.Errorf("Found incorrect credential: %v", credential)
+		}
+
+		// When no credential is found for the given type
+		_, err = FilterFirstCredentialOfType(credentials, -1)
+		if err == nil {
+			t.Errorf("Should not have found a credential for invalid type!")
+		}
+	})
+}
