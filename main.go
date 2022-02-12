@@ -9,8 +9,10 @@ import (
 	"com.blackieops.nucleus/data"
 	"com.blackieops.nucleus/files"
 	"com.blackieops.nucleus/nxc"
+	"com.blackieops.nucleus/web"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-contrib/sessions/cookie"
+	"github.com/gin-contrib/static"
 	"github.com/gin-gonic/gin"
 )
 
@@ -49,6 +51,8 @@ func main() {
 	r := gin.Default()
 	r.LoadHTMLGlob("templates/*")
 
+	r.Use(static.Serve("/static", static.LocalFile("static", false)))
+
 	sessionStore := cookie.NewStore([]byte(conf.SessionSecret))
 	r.Use(sessions.Sessions("nucleussession", sessionStore))
 
@@ -59,8 +63,8 @@ func main() {
 	}
 	nextcloudRouter.Mount(r.Group("/nextcloud"))
 
-	authRouter := &auth.AuthRouter{DBContext: dbContext}
-	authRouter.Mount(r.Group("/auth"))
+	webRouter := &web.WebRouter{DBContext: dbContext}
+	webRouter.Mount(r.Group("/web"))
 
 	r.Run(fmt.Sprintf(":%d", conf.Port))
 }

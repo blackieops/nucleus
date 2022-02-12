@@ -18,7 +18,7 @@ func (r *AuthMiddleware) EnsureSession(c *gin.Context) {
 	if session.Get("CurrentUserID") == nil {
 		session.Set("ReturnTo", c.Request.URL.Path+"?"+c.Request.URL.RawQuery)
 		session.Save()
-		c.Redirect(302, r.Config.BaseURL+"/auth/login")
+		c.Redirect(302, r.Config.BaseURL+"/web/login")
 		c.Abort()
 		return
 	}

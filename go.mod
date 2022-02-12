@@ -4,6 +4,7 @@ go 1.17
 
 require (
 	github.com/gin-contrib/sessions v0.0.4
+	github.com/gin-contrib/static v0.0.1
 	github.com/gin-gonic/gin v1.7.7
 	golang.org/x/crypto v0.0.0-20210921155107-089bfa567519
 	gopkg.in/yaml.v2 v2.2.8
