@@ -37,3 +37,8 @@ func CreateUser(ctx *data.Context, u *User) (*User, error) {
 	err := ctx.DB.Create(&u).Error
 	return u, err
 }
+
+func UpdateUser(ctx *data.Context, u *User) (*User, error) {
+	err := ctx.DB.Save(u).Error
+	return u, err
+}

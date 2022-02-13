@@ -73,3 +73,25 @@ func TestCreateUser(t *testing.T) {
 		}
 	})
 }
+
+func TestUpdateUser(t *testing.T) {
+	testUtils.WithData(func(ctx *data.Context) {
+		user, err := CreateUser(ctx, &User{
+			Name:         "Tester",
+			Username:     "test",
+			EmailAddress: "test@example.com",
+		})
+		if err != nil {
+			t.Errorf("Failed to set up user: %v", err)
+		}
+		user.EmailAddress = "test123@example.com"
+		_, err = UpdateUser(ctx, user)
+		if err != nil {
+			t.Errorf("Failed to update user: %v", err)
+		}
+		found, err := FindUser(ctx, user.ID)
+		if found.EmailAddress != "test123@example.com" {
+			t.Errorf("User was not updated properly! Email was %v", found.EmailAddress)
+		}
+	})
+}
