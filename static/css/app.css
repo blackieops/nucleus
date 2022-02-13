@@ -6,3 +6,32 @@ body {
 		"Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 	background-color: white;
 }
+
+/**
+ * General Layout
+ */
+.AppContainer {
+	margin: auto;
+	max-width: 980px;
+	padding: 0 1rem;
+}
+
+/**
+ * Header component
+ */
+.AppHeader {
+	display: flex;
+	align-items: center;
+	gap: 2rem;
+	padding: 1rem;
+}
+
+.AppHeader--Brand {
+	margin: 0;
+}
+
+.AppHeader--Nav {
+	display: flex;
+	align-items: center;
+	gap: 1rem;
+}
