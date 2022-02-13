@@ -1,0 +1,34 @@
+{{ template "_layout_begin.html" . }}
+
+<h2>Account Settings</h2>
+
+<form action="" method="POST">
+	<input type="hidden" name="_csrf" value="{{ .csrfToken }}">
+
+	<div class="FormField">
+		<label for="usernameField">Username</label>
+		<input id="usernameField" type="text" name="username" value="{{ .user.Username }}" disabled>
+		<p class="FormField--Help">
+			Your username cannot be changed.
+		</p>
+	</div>
+
+	<div class="FormField">
+		<label for="emailField">Email Address</label>
+		<input id="emailField" type="email" name="emailAddress" value="{{ .user.EmailAddress }}">
+	</div>
+
+	<div class="FormField">
+		<label for="passwordField">Password</label>
+		<input id="passwordField" type="password" name="password">
+		<p class="FormField--Help">
+			Leave blank to keep your password the same.
+		</p>
+	</div>
+
+	<footer>
+		<input type="submit" class="FormAction" value="Save">
+	</footer>
+</form>
+
+{{ template "_layout_end.html" . }}

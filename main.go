@@ -67,5 +67,10 @@ func main() {
 	webRouter := &web.WebRouter{DBContext: dbContext, Auth: authMiddleware}
 	webRouter.Mount(r.Group("/web"))
 
+	r.GET("/", func(c *gin.Context) {
+		// If you hit the root path, you probably wanted the web app.
+		c.Redirect(302, "/web/")
+	})
+
 	r.Run(fmt.Sprintf(":%d", conf.Port))
 }

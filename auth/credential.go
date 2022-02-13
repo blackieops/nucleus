@@ -49,6 +49,17 @@ func CreateCredential(c *data.Context, user *User, credential *Credential) (*Cre
 	return credential, err
 }
 
+func UpdateCredential(ctx *data.Context, c *Credential, data string) (*Credential, error) {
+	// TODO: parameterize cost in config?
+	dataDigest, err := bcrypt.GenerateFromPassword([]byte(data), 12)
+	if err != nil {
+		return c, err
+	}
+	c.DataDigest = string(dataDigest)
+	err = ctx.DB.Save(c).Error
+	return c, err
+}
+
 // Deletes a credential from the database immediately.
 func DeleteCredential(c *data.Context, credential *Credential) error {
 	return c.DB.Where("id = ?", credential.ID).Delete(credential).Error
