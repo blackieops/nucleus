@@ -48,22 +48,23 @@ func main() {
 		return
 	}
 
+	authMiddleware := &auth.AuthMiddleware{DBContext: dbContext, Config: conf}
+	sessionStore := cookie.NewStore([]byte(conf.SessionSecret))
+
 	r := gin.Default()
 	r.LoadHTMLGlob("templates/*")
-
 	r.Use(static.Serve("/static", static.LocalFile("static", false)))
-
-	sessionStore := cookie.NewStore([]byte(conf.SessionSecret))
 	r.Use(sessions.Sessions("nucleussession", sessionStore))
 
 	nextcloudRouter := &nxc.NextcloudRouter{
 		DBContext:      dbContext,
 		Config:         conf,
 		StorageBackend: fsBackend,
+		Auth:           authMiddleware,
 	}
 	nextcloudRouter.Mount(r.Group("/nextcloud"))
 
-	webRouter := &web.WebRouter{DBContext: dbContext}
+	webRouter := &web.WebRouter{DBContext: dbContext, Auth: authMiddleware}
 	webRouter.Mount(r.Group("/web"))
 
 	r.Run(fmt.Sprintf(":%d", conf.Port))

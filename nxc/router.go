@@ -16,11 +16,10 @@ type NextcloudRouter struct {
 	DBContext      *data.Context
 	Config         *config.Config
 	StorageBackend files.StorageBackend
+	Auth           *auth.AuthMiddleware
 }
 
 func (n *NextcloudRouter) Mount(r *gin.RouterGroup) {
-	middleware := &auth.AuthMiddleware{Config: n.Config}
-
 	r.GET("/status.php", func(c *gin.Context) {
 		payload := &StatusResponse{
 			Installed:            true,
@@ -68,13 +67,13 @@ func (n *NextcloudRouter) Mount(r *gin.RouterGroup) {
 		c.JSON(200, payload)
 	})
 
-	r.GET("/index.php/login/v2/grant", middleware.EnsureSession, func(c *gin.Context) {
+	r.GET("/index.php/login/v2/grant", n.Auth.EnsureSession, func(c *gin.Context) {
 		token := c.Query("token")
 		c.HTML(200, "nextcloud_grant.html", gin.H{"Token": token})
 	})
 
-	r.POST("/index.php/login/v2/grant", middleware.EnsureSession, func(c *gin.Context) {
-		user := middleware.GetCurrentUser(c)
+	r.POST("/index.php/login/v2/grant", n.Auth.EnsureSession, func(c *gin.Context) {
+		user := n.Auth.GetCurrentUser(c)
 		authSession, err := FindNextcloudAuthSessionByLoginToken(n.DBContext, c.Query("token"))
 		if err != nil {
 			c.JSON(404, gin.H{"error": err})
