@@ -25,6 +25,10 @@ type PollSuccessResponse struct {
 	Password string `json:"appPassword"`
 }
 
+// Finds the user making the given request, based on the Nextcloud App Password
+// being used in the Authorization header. This is a Nextcloud-specific auth
+// strategy and should only be used on endpoints that need Nextcloud client
+// compatibility.
 func CurrentUser(c *data.Context, g *gin.Context) (*auth.User, error) {
 	authHeaderValue := string(g.GetHeader("Authorization"))[len("Basic "):]
 	authHeaderValueBytes, err := base64.URLEncoding.DecodeString(authHeaderValue)

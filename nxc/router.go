@@ -74,11 +74,7 @@ func (n *NextcloudRouter) Mount(r *gin.RouterGroup) {
 	})
 
 	r.POST("/index.php/login/v2/grant", middleware.EnsureSession, func(c *gin.Context) {
-		user, err := auth.CurrentUser(n.DBContext, c)
-		if err != nil {
-			c.JSON(404, gin.H{"error": err})
-			return
-		}
+		user := middleware.GetCurrentUser(c)
 		authSession, err := FindNextcloudAuthSessionByLoginToken(n.DBContext, c.Query("token"))
 		if err != nil {
 			c.JSON(404, gin.H{"error": err})
