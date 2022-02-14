@@ -1,8 +1,10 @@
 package files
 
 import (
-	"com.blackieops.nucleus/auth"
+	"os"
 	"time"
+
+	"com.blackieops.nucleus/auth"
 )
 
 type File struct {
@@ -31,22 +33,11 @@ type File struct {
 	Digest string
 }
 
-type Directory struct {
-	ID        uint `gorm:"primaryKey"`
-	CreatedAt time.Time
-	UpdatedAt time.Time
-
-	// Name of the directory
-	Name string
-
-	// Projected full path to this directory including its parents
-	FullName string
-
-	// Optional parent directory to support hierarchy
-	ParentID *int
-	Parent   *Directory `gorm:"constraint:OnDelete:CASCADE;"`
-
-	// Owner of this directory
-	UserID int
-	User   auth.User
+func (f *File) SetNames(name string) {
+	f.Name = name
+	if f.Parent == nil {
+		f.FullName = name
+		return
+	}
+	f.FullName = f.Parent.FullName + string(os.PathSeparator) + name
 }
