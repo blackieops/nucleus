@@ -1,6 +1,8 @@
 package files
 
 import (
+	"path/filepath"
+
 	"com.blackieops.nucleus/auth"
 	"com.blackieops.nucleus/data"
 )
@@ -84,6 +86,58 @@ func DeletePath(ctx *data.Context, user *auth.User, path string) error {
 		return DeleteDirectory(ctx, user, entity.(*Directory))
 	}
 	return DeleteFile(ctx, user, entity.(*File))
+}
+
+func RenameFile(ctx *data.Context, user *auth.User, file *File, name string) error {
+	file.SetNames(name)
+	return ctx.DB.Save(file).Error
+}
+
+func RenameDirectory(ctx *data.Context, user *auth.User, dir *Directory, name string) error {
+	dir.SetNames(name)
+	err := ctx.DB.Save(dir).Error
+	if err != nil {
+		return err
+	}
+	composite, err := ListAll(ctx, user, 1, dir)
+	if err != nil {
+		return err
+	}
+	for _, file := range composite.Files {
+		// Files don't get "renamed", but this will trigger the reprojection of
+		// the FullName, which will store the new parent name in it.
+		err = RenameFile(ctx, user, file, file.Name)
+		if err != nil {
+			return err
+		}
+	}
+	for _, subdir := range composite.Directories {
+		// Subdirectories don't get "renamed", but this will trigger the
+		// reprojection of the FullName, which will store the new parent name.
+		err = RenameDirectory(ctx, user, subdir, subdir.Name)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func RenamePath(ctx *data.Context, user *auth.User, src string, dest string) error {
+	var entity interface{}
+	var isDir bool = false
+	entity, err := FindFileByPath(ctx, user, src)
+	if err != nil {
+		entity, err = FindDirByPath(ctx, user, src)
+		if err != nil {
+			return err
+		}
+		isDir = true
+	}
+	name := filepath.Base(dest)
+	if isDir {
+		return RenameDirectory(ctx, user, entity.(*Directory), name)
+	}
+	return RenameFile(ctx, user, entity.(*File), name)
 }
 
 func FindDirByPath(ctx *data.Context, user *auth.User, path string) (*Directory, error) {

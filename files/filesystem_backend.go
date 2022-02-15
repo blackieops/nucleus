@@ -56,6 +56,10 @@ func (b *FilesystemBackend) DeletePath(user *auth.User, path string) error {
 	return os.RemoveAll(b.userStoragePath(user, path))
 }
 
+func (b *FilesystemBackend) RenamePath(user *auth.User, src string, dest string) error {
+	return os.Rename(b.userStoragePath(user, src), b.userStoragePath(user, dest))
+}
+
 func (b *FilesystemBackend) CreateChunkDirectory(user *auth.User, name string) error {
 	err := os.Mkdir(b.userUploadsPath(user, name), 0755)
 	if err != nil {

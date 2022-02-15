@@ -14,6 +14,7 @@ type StorageBackend interface {
 	FileDigest(*auth.User, []byte) string
 	CreateDirectory(*auth.User, *Directory) error
 	DeletePath(*auth.User, string) error
+	RenamePath(*auth.User, string, string) error
 	CreateChunkDirectory(*auth.User, string) error
 	WriteChunk(*auth.User, string, []byte) error
 	ReconstructChunks(*auth.User, string, string) error
