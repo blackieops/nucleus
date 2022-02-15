@@ -34,7 +34,7 @@ func ListFiles(ctx *data.Context, user *auth.User, dir *Directory) []*File {
 	if dir == nil {
 		ctx.DB.Where("user_id = ? and parent_id is null", user.ID).Find(&entries)
 	} else {
-		ctx.DB.Where("user_id = ? and parent_id = ?", user.ID, dir.ID).Find(&entries)
+		ctx.DB.Where("user_id = ? and parent_id = ?", user.ID, dir.ID).Preload("Parent").Find(&entries)
 	}
 	return entries
 }
@@ -44,7 +44,7 @@ func ListDirectories(ctx *data.Context, user *auth.User, dir *Directory) []*Dire
 	if dir == nil {
 		ctx.DB.Where("user_id = ? and parent_id is null", user.ID).Find(&entries)
 	} else {
-		ctx.DB.Where("user_id = ? and parent_id = ?", user.ID, dir.ID).Find(&entries)
+		ctx.DB.Where("user_id = ? and parent_id = ?", user.ID, dir.ID).Preload("Parent").Find(&entries)
 	}
 	return entries
 }
