@@ -6,16 +6,16 @@ import (
 	"com.blackieops.nucleus/auth"
 	"com.blackieops.nucleus/config"
 	"com.blackieops.nucleus/data"
-	"com.blackieops.nucleus/nxc"
 	"com.blackieops.nucleus/files"
+	"com.blackieops.nucleus/nxc"
 	"github.com/gin-contrib/sessions/cookie"
 )
 
 var (
-	configPath = flag.String("config", "config.yaml", "Path to configuration file.")
-	wantIndex = flag.Bool("index", false, "Index the user files on-disk instead of running the server.")
+	configPath  = flag.String("config", "config.yaml", "Path to configuration file.")
+	wantIndex   = flag.Bool("index", false, "Index the user files on-disk instead of running the server.")
 	wantMigrate = flag.Bool("migrate", false, "Run database migrations instead of running the server.")
-	wantSeeds = flag.Bool("seed", false, "Insert test data into the database.")
+	wantSeeds   = flag.Bool("seed", false, "Insert test data into the database.")
 )
 
 func main() {

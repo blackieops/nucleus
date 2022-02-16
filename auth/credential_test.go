@@ -10,16 +10,16 @@ import (
 func TestFindUserCredentials(t *testing.T) {
 	testUtils.WithData(func(c *data.Context) {
 		user, err := CreateUser(c, &User{
-			Name: "Test",
-			Username: "test",
+			Name:         "Test",
+			Username:     "test",
 			EmailAddress: "test@example.com",
 		})
 		if err != nil {
 			t.Errorf("Failed to create user: %v", err)
 		}
 		wrongUser, err := CreateUser(c, &User{
-			Name: "Wrong",
-			Username: "wrong",
+			Name:         "Wrong",
+			Username:     "wrong",
 			EmailAddress: "wrong@example.com",
 		})
 		if err != nil {
@@ -52,8 +52,8 @@ func TestFindUserCredentials(t *testing.T) {
 func TestCreateCredential(t *testing.T) {
 	testUtils.WithData(func(c *data.Context) {
 		user, err := CreateUser(c, &User{
-			Name: "Test",
-			Username: "test",
+			Name:         "Test",
+			Username:     "test",
 			EmailAddress: "test@example.com",
 		})
 		if err != nil {
@@ -86,8 +86,8 @@ func TestCreateCredential(t *testing.T) {
 func TestValidateCredential(t *testing.T) {
 	testUtils.WithData(func(c *data.Context) {
 		user, err := CreateUser(c, &User{
-			Name: "Test",
-			Username: "test",
+			Name:         "Test",
+			Username:     "test",
 			EmailAddress: "test@example.com",
 		})
 		if err != nil {
@@ -108,8 +108,8 @@ func TestValidateCredential(t *testing.T) {
 func TestDeleteCredential(t *testing.T) {
 	testUtils.WithData(func(c *data.Context) {
 		user, err := CreateUser(c, &User{
-			Name: "Test",
-			Username: "test",
+			Name:         "Test",
+			Username:     "test",
 			EmailAddress: "test@example.com",
 		})
 		if err != nil {

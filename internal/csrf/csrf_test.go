@@ -2,13 +2,13 @@ package csrf
 
 import (
 	"bytes"
-	"testing"
 	"net/http"
 	"net/http/httptest"
+	"testing"
 
-	"github.com/gin-gonic/gin"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-contrib/sessions/memstore"
+	"github.com/gin-gonic/gin"
 )
 
 func TestGenerate(t *testing.T) {

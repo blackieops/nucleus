@@ -2,8 +2,8 @@ package web
 
 import (
 	"com.blackieops.nucleus/auth"
-	"github.com/gin-gonic/gin"
 	"github.com/gin-contrib/sessions"
+	"github.com/gin-gonic/gin"
 )
 
 func (r *WebRouter) handleAccountEdit(c *gin.Context) {

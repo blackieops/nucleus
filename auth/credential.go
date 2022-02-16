@@ -4,21 +4,21 @@ import (
 	"errors"
 	"time"
 
-	"golang.org/x/crypto/bcrypt"
 	"com.blackieops.nucleus/data"
+	"golang.org/x/crypto/bcrypt"
 )
 
 const CredentialTypePassword int = 0
 
 type Credential struct {
-	ID           uint `gorm:"primaryKey"`
-	CreatedAt    time.Time
-	UpdatedAt    time.Time
-	Type         int    `gorm:"index,not null,default:0"`
-	Data         string `gorm:"-"`
-	DataDigest   string `gorm:"not null"`
-	UserID       uint
-	User         User
+	ID         uint `gorm:"primaryKey"`
+	CreatedAt  time.Time
+	UpdatedAt  time.Time
+	Type       int    `gorm:"index,not null,default:0"`
+	Data       string `gorm:"-"`
+	DataDigest string `gorm:"not null"`
+	UserID     uint
+	User       User
 }
 
 // Find all the Credentials for the given User.

@@ -9,7 +9,7 @@ import (
 
 type AuthMiddleware struct {
 	DBContext *data.Context
-	Config *config.Config
+	Config    *config.Config
 }
 
 // Middleware to check if there is a currently logged-in user in the session.

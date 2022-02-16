@@ -39,7 +39,7 @@ func (nr *NucleusRouter) Configure() {
 
 	webRouter := &web.WebRouter{
 		DBContext: nr.DBContext,
-		Auth: nr.Auth,
+		Auth:      nr.Auth,
 	}
 	webRouter.Mount(nr.router.Group("/web"))
 
