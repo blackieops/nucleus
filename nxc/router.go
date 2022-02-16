@@ -121,10 +121,10 @@ func (n *NextcloudRouter) Mount(r *gin.RouterGroup) {
 	r.Handle("PUT", "/remote.php/dav/files/:username/*filePath", webdavRouter.HandlePut)
 	r.Handle("MKCOL", "/remote.php/dav/files/:username/*filePath", webdavRouter.HandleMkcol)
 	r.Handle("DELETE", "/remote.php/dav/files/:username/*filePath", webdavRouter.HandleDelete)
+	r.Handle("MOVE", "/remote.php/dav/files/:username/*filePath", webdavRouter.HandleMove)
+	//r.Handle("COPY", "/remote.php/dav/files/:username/*filePath", webdavRouter.HandleCopy)
 
 	r.Handle("MKCOL", "/remote.php/dav/uploads/:username/*filePath", webdavRouter.HandleChunkMkcol)
 	r.Handle("PUT", "/remote.php/dav/uploads/:username/*filePath", webdavRouter.HandleChunkPut)
 	r.Handle("MOVE", "/remote.php/dav/uploads/:username/*filePath", webdavRouter.HandleChunkMove)
-
-	// TODO: Copy? Move? Delete? Others??
 }

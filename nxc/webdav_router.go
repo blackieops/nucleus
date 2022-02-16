@@ -178,6 +178,39 @@ func (wr *WebdavRouter) HandleDelete(c *gin.Context) {
 	c.Status(http.StatusNoContent)
 }
 
+func (wr *WebdavRouter) HandleMove(c *gin.Context) {
+	user, err := CurrentUser(wr.DBContext, c)
+	if err != nil {
+		panic(err)
+	}
+	dest := strings.TrimPrefix(
+		c.Request.Header.Get("Destination"),
+		"/nextcloud/remote.php/dav/files/"+user.Username+"/",
+	)
+	dest, err = url.QueryUnescape(dest)
+	if err != nil {
+		fmt.Printf("Error trying to decode path: %v", err)
+		c.Status(http.StatusBadRequest)
+		return
+	}
+	src := c.Params.ByName("filePath")[1:]
+	err = wr.Backend.RenamePath(user, src, dest)
+	if err != nil {
+		fmt.Printf("[Webdav] MOVE error on backend: %v\n", err)
+		c.AbortWithStatus(http.StatusForbidden)
+		return
+	}
+	err = files.RenamePath(wr.DBContext, user, src, dest)
+	if err != nil {
+		fmt.Printf("[Webdav] MOVE errored at database layer: %v", err)
+		c.AbortWithStatus(http.StatusUnprocessableEntity)
+		return
+	}
+	// TODO: is it dangerous to interpolate user values here?
+	c.Header("Location", "/nextcloud/remote.php/dav/files/"+user.Username+"/"+dest)
+	c.Status(http.StatusCreated)
+}
+
 func (wr *WebdavRouter) HandleChunkMkcol(c *gin.Context) {
 	user, err := CurrentUser(wr.DBContext, c)
 	if err != nil {
