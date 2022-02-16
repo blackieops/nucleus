@@ -20,6 +20,8 @@ type NextcloudRouter struct {
 }
 
 func (n *NextcloudRouter) Mount(r *gin.RouterGroup) {
+	mw := &Middleware{DBContext: n.DBContext}
+
 	r.GET("/status.php", func(c *gin.Context) {
 		payload := &StatusResponse{
 			Installed:            true,
@@ -87,12 +89,8 @@ func (n *NextcloudRouter) Mount(r *gin.RouterGroup) {
 		c.JSON(200, BuildCapabilitiesResponse())
 	})
 
-	r.GET("/remote.php/dav/avatars/:username/:size.png", func(c *gin.Context) {
-		user, err := CurrentUser(n.DBContext, c)
-		if err != nil {
-			c.Status(http.StatusNotFound)
-			return
-		}
+	r.GET("/remote.php/dav/avatars/:username/:size.png", mw.EnsureAuthorization(), func(c *gin.Context) {
+		user := mw.GetCurrentUser(c)
 		gravatarUrl := fmt.Sprintf(
 			"https://www.gravatar.com/avatar/%x?s=%s",
 			md5.Sum([]byte(user.EmailAddress)),
@@ -113,18 +111,41 @@ func (n *NextcloudRouter) Mount(r *gin.RouterGroup) {
 		c.DataFromReader(http.StatusOK, contentLength, contentType, reader, extraHeaders)
 	})
 
-	webdavRouter := &WebdavRouter{DBContext: n.DBContext, Backend: n.StorageBackend}
+	webdavRouter := &WebdavRouter{
+		DBContext:  n.DBContext,
+		Backend:    n.StorageBackend,
+		Middleware: mw,
+	}
 
-	r.Handle("PROPFIND", "/remote.php/dav/files/:username/*filePath", webdavRouter.HandlePropfind)
+	r.Handle("PROPFIND", "/remote.php/dav/files/:username/*filePath",
+		mw.EnsureAuthorization(), webdavRouter.HandlePropfind)
+
 	//r.Handle("PROPPATCH", "/remote.php/dav/files/:username/*filePath", forwardToWebdav)
-	r.Handle("GET", "/remote.php/dav/files/:username/*filePath", webdavRouter.HandleGet)
-	r.Handle("PUT", "/remote.php/dav/files/:username/*filePath", webdavRouter.HandlePut)
-	r.Handle("MKCOL", "/remote.php/dav/files/:username/*filePath", webdavRouter.HandleMkcol)
-	r.Handle("DELETE", "/remote.php/dav/files/:username/*filePath", webdavRouter.HandleDelete)
-	r.Handle("MOVE", "/remote.php/dav/files/:username/*filePath", webdavRouter.HandleMove)
-	//r.Handle("COPY", "/remote.php/dav/files/:username/*filePath", webdavRouter.HandleCopy)
 
-	r.Handle("MKCOL", "/remote.php/dav/uploads/:username/*filePath", webdavRouter.HandleChunkMkcol)
-	r.Handle("PUT", "/remote.php/dav/uploads/:username/*filePath", webdavRouter.HandleChunkPut)
-	r.Handle("MOVE", "/remote.php/dav/uploads/:username/*filePath", webdavRouter.HandleChunkMove)
+	r.Handle("GET", "/remote.php/dav/files/:username/*filePath",
+		mw.EnsureAuthorization(), webdavRouter.HandleGet)
+
+	r.Handle("PUT", "/remote.php/dav/files/:username/*filePath",
+		mw.EnsureAuthorization(), webdavRouter.HandlePut)
+
+	r.Handle("MKCOL", "/remote.php/dav/files/:username/*filePath",
+		mw.EnsureAuthorization(), webdavRouter.HandleMkcol)
+
+	r.Handle("DELETE", "/remote.php/dav/files/:username/*filePath",
+		mw.EnsureAuthorization(), webdavRouter.HandleDelete)
+
+	r.Handle("MOVE", "/remote.php/dav/files/:username/*filePath",
+		mw.EnsureAuthorization(), webdavRouter.HandleMove)
+
+	// r.Handle("COPY", "/remote.php/dav/files/:username/*filePath",
+	//	mw.EnsureAuthorization(), webdavRouter.HandleCopy)
+
+	r.Handle("MKCOL", "/remote.php/dav/uploads/:username/*filePath",
+		mw.EnsureAuthorization(), webdavRouter.HandleChunkMkcol)
+
+	r.Handle("PUT", "/remote.php/dav/uploads/:username/*filePath",
+		mw.EnsureAuthorization(), webdavRouter.HandleChunkPut)
+
+	r.Handle("MOVE", "/remote.php/dav/uploads/:username/*filePath",
+		mw.EnsureAuthorization(), webdavRouter.HandleChunkMove)
 }

@@ -18,8 +18,9 @@ import (
 )
 
 type WebdavRouter struct {
-	DBContext *data.Context
-	Backend   files.StorageBackend
+	DBContext  *data.Context
+	Backend    files.StorageBackend
+	Middleware *Middleware
 }
 
 // A "fake" directory to be used as the user's root directory handle, as the
@@ -37,10 +38,7 @@ func (wr *WebdavRouter) HandlePropfind(c *gin.Context) {
 	w.WriteHeader(http.StatusMultiStatus)
 	w.Header().Add("content-type", "application/xml; charset=utf-8")
 
-	user, err := CurrentUser(wr.DBContext, c)
-	if err != nil {
-		panic(err)
-	}
+	user := wr.Middleware.GetCurrentUser(c)
 
 	opts, err := wr.buildPropfindOptionsFromRequest(c)
 	if err != nil {
@@ -77,10 +75,7 @@ func (wr *WebdavRouter) HandlePropfind(c *gin.Context) {
 }
 
 func (wr *WebdavRouter) HandleGet(c *gin.Context) {
-	user, err := CurrentUser(wr.DBContext, c)
-	if err != nil {
-		panic(err)
-	}
+	user := wr.Middleware.GetCurrentUser(c)
 	file, err := files.FindFileByPath(wr.DBContext, user, c.Params.ByName("filePath")[1:])
 	if err != nil {
 		c.Status(http.StatusNotFound)
@@ -95,10 +90,7 @@ func (wr *WebdavRouter) HandleGet(c *gin.Context) {
 }
 
 func (wr *WebdavRouter) HandlePut(c *gin.Context) {
-	user, err := CurrentUser(wr.DBContext, c)
-	if err != nil {
-		panic(err)
-	}
+	user := wr.Middleware.GetCurrentUser(c)
 	filePath := c.Params.ByName("filePath")[1:]
 	contents, err := ioutil.ReadAll(c.Request.Body)
 	fileEntity := &files.File{
@@ -124,12 +116,9 @@ func (wr *WebdavRouter) HandlePut(c *gin.Context) {
 }
 
 func (wr *WebdavRouter) HandleMkcol(c *gin.Context) {
-	user, err := CurrentUser(wr.DBContext, c)
-	if err != nil {
-		panic(err)
-	}
+	user := wr.Middleware.GetCurrentUser(c)
 	filePath := c.Params.ByName("filePath")[1:]
-	_, err = files.FindDirByPath(wr.DBContext, user, filePath)
+	_, err := files.FindDirByPath(wr.DBContext, user, filePath)
 	if err == nil {
 		// Bail if the directory already exists to make this idempotent.
 		c.Status(http.StatusOK)
@@ -158,12 +147,9 @@ func (wr *WebdavRouter) HandleMkcol(c *gin.Context) {
 }
 
 func (wr *WebdavRouter) HandleDelete(c *gin.Context) {
-	user, err := CurrentUser(wr.DBContext, c)
-	if err != nil {
-		panic(err)
-	}
+	user := wr.Middleware.GetCurrentUser(c)
 	path := c.Params.ByName("filePath")[1:]
-	err = files.DeletePath(wr.DBContext, user, path)
+	err := files.DeletePath(wr.DBContext, user, path)
 	if err != nil {
 		fmt.Printf("Failed to delete files or directory from database: %v\n", err)
 		c.Status(http.StatusUnprocessableEntity)
@@ -179,15 +165,12 @@ func (wr *WebdavRouter) HandleDelete(c *gin.Context) {
 }
 
 func (wr *WebdavRouter) HandleMove(c *gin.Context) {
-	user, err := CurrentUser(wr.DBContext, c)
-	if err != nil {
-		panic(err)
-	}
+	user := wr.Middleware.GetCurrentUser(c)
 	dest := strings.TrimPrefix(
 		c.Request.Header.Get("Destination"),
 		"/nextcloud/remote.php/dav/files/"+user.Username+"/",
 	)
-	dest, err = url.QueryUnescape(dest)
+	dest, err := url.QueryUnescape(dest)
 	if err != nil {
 		fmt.Printf("Error trying to decode path: %v", err)
 		c.Status(http.StatusBadRequest)
@@ -212,20 +195,14 @@ func (wr *WebdavRouter) HandleMove(c *gin.Context) {
 }
 
 func (wr *WebdavRouter) HandleChunkMkcol(c *gin.Context) {
-	user, err := CurrentUser(wr.DBContext, c)
-	if err != nil {
-		panic(err)
-	}
+	user := wr.Middleware.GetCurrentUser(c)
 	name := filepath.Base(c.Params.ByName("filePath")[1:])
 	wr.Backend.CreateChunkDirectory(user, name)
 	c.Status(http.StatusCreated)
 }
 
 func (wr *WebdavRouter) HandleChunkPut(c *gin.Context) {
-	user, err := CurrentUser(wr.DBContext, c)
-	if err != nil {
-		panic(err)
-	}
+	user := wr.Middleware.GetCurrentUser(c)
 	contents, err := ioutil.ReadAll(c.Request.Body)
 	if err != nil {
 		panic(err)
@@ -238,15 +215,12 @@ func (wr *WebdavRouter) HandleChunkPut(c *gin.Context) {
 }
 
 func (wr *WebdavRouter) HandleChunkMove(c *gin.Context) {
-	user, err := CurrentUser(wr.DBContext, c)
-	if err != nil {
-		panic(err)
-	}
+	user := wr.Middleware.GetCurrentUser(c)
 	dest := strings.TrimPrefix(
 		c.Request.Header.Get("Destination"),
 		"/nextcloud/remote.php/dav/files/"+user.Username+"/",
 	)
-	dest, err = url.QueryUnescape(dest)
+	dest, err := url.QueryUnescape(dest)
 	if err != nil {
 		fmt.Printf("Error trying to decode path: %v", err)
 		c.Status(http.StatusUnprocessableEntity)
