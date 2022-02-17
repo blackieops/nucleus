@@ -106,7 +106,7 @@ func RenameDirectory(ctx *data.Context, user *auth.User, dir *Directory, name st
 	for _, file := range composite.Files {
 		// Files don't get "renamed", but this will trigger the reprojection of
 		// the FullName, which will store the new parent name in it.
-		err = RenameFile(ctx, user, file, file.Name)
+		err = RenameFile(ctx, file, file.Name)
 		if err != nil {
 			return err
 		}
@@ -137,7 +137,7 @@ func RenamePath(ctx *data.Context, user *auth.User, src string, dest string) err
 	if isDir {
 		return RenameDirectory(ctx, user, entity.(*Directory), name)
 	}
-	return RenameFile(ctx, user, entity.(*File), name)
+	return RenameFile(ctx, entity.(*File), name)
 }
 
 func FindDirByPath(ctx *data.Context, user *auth.User, path string) (*Directory, error) {
