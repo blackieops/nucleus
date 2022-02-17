@@ -249,7 +249,7 @@ func TestRenameFile(t *testing.T) {
 		}
 
 		// Test that it renames
-		err = RenameFile(ctx, user, file, "Proposal.docx")
+		err = RenameFile(ctx, file, "Proposal.docx")
 		if err != nil {
 			t.Errorf("Failed to rename file: %v", err)
 		}
