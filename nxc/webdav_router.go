@@ -1,6 +1,7 @@
 package nxc
 
 import (
+	"crypto/sha1"
 	"encoding/xml"
 	"fmt"
 	"io/ioutil"
@@ -93,12 +94,13 @@ func (wr *WebdavRouter) HandlePut(c *gin.Context) {
 	user := wr.Middleware.GetCurrentUser(c)
 	filePath := c.Params.ByName("filePath")[1:]
 	contents, err := ioutil.ReadAll(c.Request.Body)
+	digest := sha1.Sum(contents)
 	fileEntity := &files.File{
 		Name:     filepath.Base(filePath),
 		FullName: filePath,
 		Size:     c.Request.ContentLength,
 		User:     *user,
-		Digest:   wr.Backend.FileDigest(user, contents),
+		Digest:   fmt.Sprintf("%x", digest[:]),
 	}
 	if parentDir, err := files.FindDirByPath(wr.DBContext, user, filepath.Dir(filePath)); err == nil {
 		fileEntity.Parent = parentDir

@@ -1,9 +1,7 @@
 package files
 
 import (
-	"crypto/sha1"
 	"errors"
-	"fmt"
 	"io/fs"
 	"io/ioutil"
 	"os"
@@ -35,11 +33,6 @@ func (b *FilesystemBackend) ReadFile(user *auth.User, file *File) ([]byte, error
 
 func (b *FilesystemBackend) WriteFile(user *auth.User, file *File, contents []byte) error {
 	return ioutil.WriteFile(b.userStoragePath(user, file.FullName), contents, 0644)
-}
-
-func (b *FilesystemBackend) FileDigest(user *auth.User, contents []byte) string {
-	digest := sha1.Sum(contents)
-	return fmt.Sprintf("%x", digest[:])
 }
 
 func (b *FilesystemBackend) CreateDirectory(user *auth.User, dir *Directory) error {
