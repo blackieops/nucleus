@@ -5,5 +5,8 @@ import (
 )
 
 func AutoMigrate(c *data.Context) {
-	c.DB.AutoMigrate(&NextcloudAppPassword{}, &NextcloudAuthSession{})
+	err := c.DB.AutoMigrate(&NextcloudAppPassword{}, &NextcloudAuthSession{})
+	if err != nil {
+		panic(err)
+	}
 }
