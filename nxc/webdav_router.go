@@ -236,7 +236,8 @@ func (wr *WebdavRouter) HandleChunkMove(c *gin.Context) {
 			return
 		}
 	}
-	err = wr.Backend.ReconstructChunks(user, filepath.Dir(c.Params.ByName("filePath")[1:]), dest)
+	srcDir := filepath.Dir(c.Params.ByName("filePath")[1:])
+	err = wr.Backend.ReconstructChunks(user, srcDir, dest)
 	if err != nil {
 		fmt.Printf("Failed to reconstruct chunked upload: %v\n", err)
 		c.Status(http.StatusUnprocessableEntity)
@@ -254,6 +255,10 @@ func (wr *WebdavRouter) HandleChunkMove(c *gin.Context) {
 		fmt.Printf("Failed to save reconstructed chunked file in database: %v", err)
 		c.Status(http.StatusUnprocessableEntity)
 		return
+	}
+	err = wr.Backend.DeleteChunkDirectory(user, srcDir)
+	if err != nil {
+		fmt.Printf("[Webdav] Failed to remove temporary upload folder: %v\n", err)
 	}
 	c.Header("etag", file.Digest)
 	c.Header("OC-FileID", fmt.Sprint(file.ID))

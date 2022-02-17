@@ -18,4 +18,5 @@ type StorageBackend interface {
 	CreateChunkDirectory(*auth.User, string) error
 	WriteChunk(*auth.User, string, []byte) error
 	ReconstructChunks(*auth.User, string, string) error
+	DeleteChunkDirectory(*auth.User, string) error
 }

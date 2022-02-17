@@ -96,6 +96,10 @@ func (b *FilesystemBackend) ReconstructChunks(user *auth.User, srcDir string, de
 	return nil
 }
 
+func (b *FilesystemBackend) DeleteChunkDirectory(user *auth.User, dirName string) error {
+	return os.RemoveAll(b.userUploadsPath(user, dirName))
+}
+
 func (b *FilesystemBackend) storagePath(path *string) string {
 	if path == nil {
 		return b.StoragePrefix
