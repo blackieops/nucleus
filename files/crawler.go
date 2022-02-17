@@ -3,7 +3,7 @@ package files
 import (
 	"fmt"
 	"io/fs"
-	"os"
+	"path/filepath"
 	"sync"
 
 	"com.blackieops.nucleus/auth"
@@ -67,7 +67,7 @@ func (c *Crawler) DiscoverFile(user *auth.User, dir *Directory, name string) (*F
 	if dir == nil {
 		path = name
 	} else {
-		path = dir.FullName + string(os.PathSeparator) + name
+		path = filepath.Join(dir.FullName, name)
 	}
 	fileStat, err := c.Backend.Stat(user, path)
 	if err != nil {

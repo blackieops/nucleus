@@ -1,7 +1,7 @@
 package files
 
 import (
-	"os"
+	"path/filepath"
 	"time"
 
 	"com.blackieops.nucleus/auth"
@@ -33,5 +33,5 @@ func (d *Directory) SetNames(name string) {
 		d.FullName = name
 		return
 	}
-	d.FullName = d.Parent.FullName + string(os.PathSeparator) + name
+	d.FullName = filepath.Join(d.Parent.FullName, name)
 }

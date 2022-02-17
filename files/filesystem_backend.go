@@ -7,6 +7,7 @@ import (
 	"io/fs"
 	"io/ioutil"
 	"os"
+	"path/filepath"
 
 	"com.blackieops.nucleus/auth"
 )
@@ -104,18 +105,16 @@ func (b *FilesystemBackend) storagePath(path *string) string {
 	if path == nil {
 		return b.StoragePrefix
 	} else {
-		return b.StoragePrefix + string(os.PathSeparator) + *path
+		return filepath.Join(b.StoragePrefix, *path)
 	}
 }
 
 func (b *FilesystemBackend) userStoragePath(user *auth.User, path string) string {
-	sep := string(os.PathSeparator)
-	filesBasePath := user.Username + sep + "files" + sep + path
+	filesBasePath := filepath.Join(user.Username, "files", path)
 	return b.storagePath(&filesBasePath)
 }
 
 func (b *FilesystemBackend) userUploadsPath(user *auth.User, path string) string {
-	sep := string(os.PathSeparator)
-	filesBasePath := user.Username + sep + "uploads" + sep + path
-	return b.storagePath(&filesBasePath)
+	uploadsBasePath := filepath.Join(user.Username, "uploads", path)
+	return b.storagePath(&uploadsBasePath)
 }
