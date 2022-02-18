@@ -103,3 +103,24 @@ func TestUserAvatarURL(t *testing.T) {
 		t.Errorf("AvatarURL generated unexpected URL: %v", url)
 	}
 }
+
+func TestDeleteUser(t *testing.T) {
+	testUtils.WithData(func(ctx *data.Context) {
+		user, err := CreateUser(ctx, &User{
+			Name:         "Tester",
+			Username:     "test",
+			EmailAddress: "test@example.com",
+		})
+		if err != nil {
+			t.Errorf("Failed to set up user: %v", err)
+		}
+		err = DeleteUser(ctx, user)
+		if err != nil {
+			t.Errorf("Failed to delete user: %v", err)
+		}
+		_, err = FindUser(ctx, user.ID)
+		if err == nil {
+			t.Errorf("User was not deleted properly!")
+		}
+	})
+}

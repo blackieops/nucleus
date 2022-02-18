@@ -53,3 +53,7 @@ func UpdateUser(ctx *data.Context, u *User) (*User, error) {
 	err := ctx.DB.Save(u).Error
 	return u, err
 }
+
+func DeleteUser(ctx *data.Context, u *User) error {
+	return ctx.DB.Delete(u).Error
+}
