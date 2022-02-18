@@ -1,8 +1,7 @@
 package nxc
 
 import (
-	"crypto/md5"
-	"fmt"
+	"strconv"
 	"net/http"
 
 	"com.blackieops.nucleus/auth"
@@ -91,11 +90,12 @@ func (n *NextcloudRouter) Mount(r *gin.RouterGroup) {
 
 	r.GET("/remote.php/dav/avatars/:username/:size.png", mw.EnsureAuthorization(), func(c *gin.Context) {
 		user := mw.GetCurrentUser(c)
-		gravatarUrl := fmt.Sprintf(
-			"https://www.gravatar.com/avatar/%x?s=%s",
-			md5.Sum([]byte(user.EmailAddress)),
-			c.Params.ByName("size"),
-		)
+		size, err := strconv.Atoi(c.Params.ByName("size"))
+		if err != nil {
+			c.AbortWithStatus(http.StatusBadRequest)
+			return
+		}
+		gravatarUrl := user.AvatarURL(size)
 		response, err := http.Get(gravatarUrl)
 		if err != nil {
 			c.Status(http.StatusBadGateway)

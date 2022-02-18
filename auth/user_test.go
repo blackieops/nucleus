@@ -95,3 +95,11 @@ func TestUpdateUser(t *testing.T) {
 		}
 	})
 }
+
+func TestUserAvatarURL(t *testing.T) {
+	user := &User{EmailAddress: "admin@example.com"}
+	url := user.AvatarURL(69)
+	if url != "https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=69" {
+		t.Errorf("AvatarURL generated unexpected URL: %v", url)
+	}
+}

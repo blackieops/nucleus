@@ -1,8 +1,11 @@
 package auth
 
 import (
-	"com.blackieops.nucleus/data"
+	"crypto/md5"
+	"fmt"
 	"time"
+
+	"com.blackieops.nucleus/data"
 )
 
 type User struct {
@@ -13,6 +16,14 @@ type User struct {
 	Name         string
 	EmailAddress string `gorm:"uniqueIndex"`
 	Credentials  []*Credential
+}
+
+func (u *User) AvatarURL(size int) string {
+	return fmt.Sprintf(
+		"https://www.gravatar.com/avatar/%x?s=%s",
+		md5.Sum([]byte(u.EmailAddress)),
+		fmt.Sprint(size),
+	)
 }
 
 func FindAllUsers(ctx *data.Context) []*User {
