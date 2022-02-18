@@ -22,5 +22,15 @@
 				</a>
 				<a class="AppHeader--Nav--Link" href="/web/">My Account</a>
 			</nav>
+			<div class="AppHeader--Session">
+				<img class="AppHeader--Session--Avatar" src="/web/me/avatar" alt="My Avatar" width="48" height="48">
+				<div>
+					{{ .user.Name }}<br>
+					<form action="/web/logout" method="POST">
+						<input type="hidden" name="_csrf" value="{{ .csrfToken }}">
+						<button>Log Out</button>
+					</form>
+				</div>
+			</div>
 		</header>
 		<div class="AppContainer">

@@ -74,6 +74,17 @@ body {
 	border-radius: 99em;
 }
 
+.AppHeader--Session {
+	display: flex;
+	align-items: center;
+	margin-left: auto;
+}
+
+.AppHeader--Session--Avatar {
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
 /**
  * Forms
  */

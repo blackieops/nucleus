@@ -50,3 +50,10 @@ func (r *WebRouter) handleLoginCreate(c *gin.Context) {
 
 	c.Redirect(302, "/")
 }
+
+func (r *WebRouter) handleLoginDestroy(c *gin.Context) {
+	session := sessions.Default(c)
+	session.Clear()
+	session.Save()
+	c.Redirect(302, "/")
+}
