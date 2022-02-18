@@ -1,0 +1,5 @@
+# Ignore JS sewage
+node_modules
+
+# Ignore generated files
+public

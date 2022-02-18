@@ -1,0 +1,17 @@
+{
+  "name": "com.blackieops.nucleus-web",
+  "private": true,
+  "scripts": {
+    "build": "esbuild src/app.tsx --bundle --minify --sourcemap --outfile=public/bundle.js"
+  },
+  "devDependencies": {
+    "esbuild": "^0.14.22"
+  },
+  "dependencies": {
+    "@types/react": "^17.0.39",
+    "@types/react-dom": "^17.0.11",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "typescript": "^4.5.5"
+  }
+}
