@@ -96,6 +96,7 @@ body {
 		margin: 0 0 0.25rem 0;
 	}
 	.FormField input {
+		box-sizing: border-box;
 		padding: 0.5rem;
 		font-size: 1rem;
 	}
@@ -104,6 +105,12 @@ body {
 	margin: 0.25rem 0 0 0;
 	font-size: 90%;
 	font-style: italic;
+}
+
+.FormActions {
+	display: flex;
+	justify-content: flex-end;
+	text-align: right;
 }
 
 .FormLayout {
@@ -136,7 +143,6 @@ body {
  * Buttons
  */
 .Button {
-	display: inline-block;
 	display: flex;
 	align-items: center;
 	padding: 0.75em 2em;
@@ -145,6 +151,41 @@ body {
 	background-color: black;
 	color: white;
 	font-size: 1em;
+	line-height: 1em;
 	outline: 0;
 	appearance: none;
 }
+	.Button svg {
+		width: .95em;
+		height: .95em;
+		margin-right: 0.5rem;
+	}
+	.Button span {
+		flex-shrink: 0;
+	}
+
+/**
+ * Public stuff
+ */
+.PublicForm {
+	box-sizing: border-box;
+	margin: 4rem auto;
+	padding: 2rem;
+	max-width: 32rem;
+}
+	.PublicForm .FormField input {
+		width: 100%;
+	}
+
+.PublicForm--Header {
+	border-bottom: 0.1rem solid black;
+	padding: 1rem 0;
+}
+	.PublicForm--Header p {
+		line-height: 1.5em;
+	}
+
+	.PublicForm--Header h2 {
+		margin: 0;
+		font-size: 3rem;
+	}
