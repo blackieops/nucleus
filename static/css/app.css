@@ -94,3 +94,46 @@ body {
 	font-size: 90%;
 	font-style: italic;
 }
+
+.FormLayout {
+	display: flex;
+	align-items: flex-start;
+}
+
+.FormLayout--Description,
+.FormLayout--Fields {
+	box-sizing: border-box;
+	flex-shrink: 0;
+}
+
+.FormLayout--Description {
+	padding-top: 1rem;
+	width: 40%;
+}
+	.FormLayout--Description p {
+		line-height: 1.5em;
+	}
+
+.FormLayout--Fields {
+	width: 60%;
+}
+	.FormLayout--Fields .FormField input {
+		width: 100%;
+	}
+
+/**
+ * Buttons
+ */
+.Button {
+	display: inline-block;
+	display: flex;
+	align-items: center;
+	padding: 0.75em 2em;
+	cursor: pointer;
+	border: 0.15em solid black;
+	background-color: black;
+	color: white;
+	font-size: 1em;
+	outline: 0;
+	appearance: none;
+}

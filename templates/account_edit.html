@@ -1,34 +1,44 @@
 {{ template "_layout_begin.html" . }}
 
-<h2>Account Settings</h2>
-
-<form action="" method="POST">
-	<input type="hidden" name="_csrf" value="{{ .csrfToken }}">
-
-	<div class="FormField">
-		<label for="usernameField">Username</label>
-		<input id="usernameField" type="text" name="username" value="{{ .user.Username }}" disabled>
-		<p class="FormField--Help">
-			Your username cannot be changed.
+<div class="FormLayout">
+	<div class="FormLayout--Description">
+		<h2>Account Settings</h2>
+		<p>
+			Edit your account details. Your name and email address may be shown
+			to other users.
 		</p>
 	</div>
 
-	<div class="FormField">
-		<label for="emailField">Email Address</label>
-		<input id="emailField" type="email" name="emailAddress" value="{{ .user.EmailAddress }}">
-	</div>
+	<div class="FormLayout--Fields">
+		<form action="" method="POST">
+			<input type="hidden" name="_csrf" value="{{ .csrfToken }}">
 
-	<div class="FormField">
-		<label for="passwordField">Password</label>
-		<input id="passwordField" type="password" name="password">
-		<p class="FormField--Help">
-			Leave blank to keep your password the same.
-		</p>
-	</div>
+			<div class="FormField">
+				<label for="usernameField">Username</label>
+				<input id="usernameField" type="text" name="username" value="{{ .user.Username }}" disabled>
+				<p class="FormField--Help">
+					Your username cannot be changed.
+				</p>
+			</div>
 
-	<footer>
-		<input type="submit" class="FormAction" value="Save">
-	</footer>
-</form>
+			<div class="FormField">
+				<label for="emailField">Email Address</label>
+				<input id="emailField" type="email" name="emailAddress" value="{{ .user.EmailAddress }}">
+			</div>
+
+			<div class="FormField">
+				<label for="passwordField">Password</label>
+				<input id="passwordField" type="password" name="password">
+				<p class="FormField--Help">
+					Leave blank to keep your password the same.
+				</p>
+			</div>
+
+			<footer>
+				<input type="submit" class="FormAction Button" value="Save">
+			</footer>
+		</form>
+	</div>
+</div>
 
 {{ template "_layout_end.html" . }}
