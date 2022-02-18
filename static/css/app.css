@@ -46,6 +46,8 @@ table {
 	margin: 0 0 -1px 0;
 	padding: 1rem;
 	background: black;
+	font-size: 1.5rem;
+	text-decoration: none;
 	color: white;
 }
 .AppHeader--Brand--Icon {
