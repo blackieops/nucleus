@@ -18,6 +18,9 @@ func (r *WebRouter) handleAccountUpdate(c *gin.Context) {
 	if newEmail := c.PostForm("emailAddress"); newEmail != "" {
 		user.EmailAddress = newEmail
 	}
+	if newName := c.PostForm("name"); newName != "" {
+		user.Name = newName
+	}
 	user, err := auth.UpdateUser(r.DBContext, user)
 	if err != nil {
 		panic(err)

@@ -22,6 +22,11 @@
 			</div>
 
 			<div class="FormField">
+				<label for="nameField">Preferred Name</label>
+				<input id="nameField" type="text" name="name" value="{{ .user.Name }}">
+			</div>
+
+			<div class="FormField">
 				<label for="emailField">Email Address</label>
 				<input id="emailField" type="email" name="emailAddress" value="{{ .user.EmailAddress }}">
 			</div>
