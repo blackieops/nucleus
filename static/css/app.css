@@ -85,6 +85,10 @@ body {
 	margin-right: 0.5rem;
 }
 
+.AppHeader--Session--Actions--Logout {
+	margin-top: 0.25rem;
+}
+
 /**
  * Forms
  */
@@ -163,6 +167,12 @@ body {
 	.Button span {
 		flex-shrink: 0;
 	}
+
+.ButtonSmall {
+	font-size: 0.8em;
+	line-height: 1em;
+	padding: 0.25em 1em;
+}
 
 /**
  * Public stuff
