@@ -1,0 +1,53 @@
+{{ template "_layout_begin.html" . }}
+
+<a class="Button" href="/web/users">
+	<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9.707 14.707a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 1.414L7.414 9H15a1 1 0 110 2H7.414l2.293 2.293a1 1 0 010 1.414z" clip-rule="evenodd" /></svg>
+	Users
+</a>
+
+<div class="FormLayout">
+	<div class="FormLayout--Description">
+		<h2>Add a User</h2>
+		<p>
+			This new user will be able to immediately log in and use Nucleus.
+		</p>
+	</div>
+
+	<div class="FormLayout--Fields">
+		{{ range .flashes }}
+		<div class="Alert AlertError">
+			{{ . }}
+		</div>
+		{{ end }}
+
+		<form action="" method="POST">
+			<input type="hidden" name="_csrf" value="{{ .csrfToken }}">
+
+			<div class="FormField">
+				<label for="usernameField">Username</label>
+				<input id="usernameField" type="text" name="username">
+			</div>
+
+			<div class="FormField">
+				<label for="nameField">Preferred Name</label>
+				<input id="nameField" type="text" name="name">
+			</div>
+
+			<div class="FormField">
+				<label for="emailField">Email Address</label>
+				<input id="emailField" type="email" name="emailAddress">
+			</div>
+
+			<div class="FormField">
+				<label for="passwordField">Password</label>
+				<input id="passwordField" type="password" name="password">
+			</div>
+
+			<footer class="FormActions">
+				<input type="submit" class="Button" value="Save">
+			</footer>
+		</form>
+	</div>
+</div>
+
+{{ template "_layout_end.html" . }}

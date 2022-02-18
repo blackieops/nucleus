@@ -7,6 +7,19 @@ body {
 	background-color: white;
 }
 
+table {
+	width: 100%;
+	border-spacing: 0;
+}
+	table thead th {
+		text-align: left;
+		border-bottom: 0.15rem solid black
+	}
+	table th,
+	table td {
+		padding: 0.5rem 0;
+	}
+
 /**
  * General Layout
  */
@@ -149,13 +162,14 @@ body {
 .Button {
 	display: flex;
 	align-items: center;
-	padding: 0.75em 2em;
+	padding: 0.75em 1.5em;
 	cursor: pointer;
 	border: 0.15em solid black;
 	background-color: black;
 	color: white;
 	font-size: 1em;
 	line-height: 1em;
+	text-decoration: none;
 	outline: 0;
 	appearance: none;
 }
@@ -172,6 +186,28 @@ body {
 	font-size: 0.8em;
 	line-height: 1em;
 	padding: 0.25em 1em;
+}
+
+/**
+ * Section Header component
+ */
+.SectionHeader {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding-bottom: 2rem;
+}
+
+/**
+ * Alert component
+ */
+.Alert {
+	margin: 2rem auto;
+	padding: 1rem;
+}
+.AlertError {
+	background-color: orange;
+	color: white;
 }
 
 /**

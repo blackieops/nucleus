@@ -20,4 +20,9 @@ func (r *WebRouter) Mount(g *gin.RouterGroup) {
 	g.GET("/me/avatar", r.Auth.EnsureSession, r.handleUserAvatarShow)
 	g.GET("/", r.Auth.EnsureSession, csrf.Generate(), r.handleAccountEdit)
 	g.POST("/", r.Auth.EnsureSession, csrf.Validate(), r.handleAccountUpdate)
+
+	g.GET("/users", r.Auth.EnsureSession, csrf.Generate(), r.handleUsersIndex)
+	g.GET("/users/new", r.Auth.EnsureSession, csrf.Generate(), r.handleUsersNew)
+	g.POST("/users/new", r.Auth.EnsureSession, csrf.Validate(), r.handleUsersCreate)
+	g.POST("/users/:userId/destroy", r.Auth.EnsureSession, csrf.Validate(), r.handleUsersDestroy)
 }
