@@ -1,7 +1,11 @@
 package main
 
 import (
+	"embed"
 	"fmt"
+	"html/template"
+	"io/fs"
+	"net/http"
 
 	"com.blackieops.nucleus/auth"
 	"com.blackieops.nucleus/config"
@@ -10,7 +14,6 @@ import (
 	"com.blackieops.nucleus/nxc"
 	"com.blackieops.nucleus/web"
 	"github.com/gin-contrib/sessions"
-	"github.com/gin-contrib/static"
 	"github.com/gin-gonic/gin"
 )
 
@@ -23,10 +26,21 @@ type NucleusRouter struct {
 	router         *gin.Engine
 }
 
+//go:embed templates/* static/*
+var assetFS embed.FS
+
 func (nr *NucleusRouter) Configure() {
 	nr.router = gin.Default()
-	nr.router.LoadHTMLGlob("templates/*")
-	nr.router.Use(static.Serve("/static", static.LocalFile("static", false)))
+
+	// Use binary-embedded templates and static assets.
+	tmpls := template.Must(template.New("").ParseFS(assetFS, "templates/*"))
+	staticlessAssetFS, err := fs.Sub(assetFS, "static")
+	if err != nil {
+		panic(err)
+	}
+	nr.router.SetHTMLTemplate(tmpls)
+	nr.router.StaticFS("/static", http.FS(staticlessAssetFS))
+
 	nr.router.Use(sessions.Sessions("nucleussession", nr.SessionStore))
 
 	nextcloudRouter := &nxc.NextcloudRouter{
