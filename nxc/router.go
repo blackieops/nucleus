@@ -1,8 +1,9 @@
 package nxc
 
 import (
-	"strconv"
 	"net/http"
+	"strconv"
+	"strings"
 
 	"com.blackieops.nucleus/auth"
 	"com.blackieops.nucleus/config"
@@ -88,9 +89,10 @@ func (n *NextcloudRouter) Mount(r *gin.RouterGroup) {
 		c.JSON(200, BuildCapabilitiesResponse())
 	})
 
-	r.GET("/remote.php/dav/avatars/:username/:size.png", mw.EnsureAuthorization(), func(c *gin.Context) {
+	r.GET("/remote.php/dav/avatars/:username/:size", mw.EnsureAuthorization(), func(c *gin.Context) {
 		user := mw.GetCurrentUser(c)
-		size, err := strconv.Atoi(c.Params.ByName("size"))
+		sizeWithoutPNG := strings.TrimRight(c.Param("size"), ".png")
+		size, err := strconv.Atoi(sizeWithoutPNG)
 		if err != nil {
 			c.AbortWithStatus(http.StatusBadRequest)
 			return
