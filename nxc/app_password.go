@@ -19,6 +19,25 @@ type NextcloudAppPassword struct {
 	User           auth.User
 }
 
+func ListNextcloudAppPasswordsForUser(
+	ctx *data.Context,
+	user *auth.User,
+) ([]*NextcloudAppPassword, error) {
+	var passwords []*NextcloudAppPassword
+	err := ctx.DB.Where("user_id = ?", user.ID).Find(&passwords).Error
+	return passwords, err
+}
+
+func FindNextcloudAppPassword(
+	ctx *data.Context,
+	user *auth.User,
+	id uint,
+) (*NextcloudAppPassword, error) {
+	var password *NextcloudAppPassword
+	err := ctx.DB.Where("user_id = ? and id = ?", user.ID, id).First(&password).Error
+	return password, err
+}
+
 func CreateNextcloudAppPassword(
 	ctx *data.Context,
 	session *NextcloudAuthSession,
@@ -62,6 +81,10 @@ func FindNextcloudAppPasswordByPassword(c *data.Context, composite string) (*Nex
 		return &NextcloudAppPassword{}, err
 	}
 	return appPassword, err
+}
+
+func DeleteNextcloudAppPassword(c *data.Context, p *NextcloudAppPassword) error {
+	return c.DB.Delete(p).Error
 }
 
 func generateNextcloudToken(length int) string {

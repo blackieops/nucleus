@@ -46,4 +46,41 @@
 	</div>
 </div>
 
+<div class="FormLayout">
+	<div class="FormLayout--Description">
+		<h2>Nextcloud Connections</h2>
+		<p>
+			These are the active Nextcloud apps that have access to your
+			account and your files.
+		</p>
+	</div>
+
+	<div class="FormLayout--Fields">
+		<table>
+			<thead>
+				<tr>
+					<th>Created</th>
+					<th></th>
+				</tr>
+			</thead>
+			<tbody>
+				{{ range .appPasswords }}
+				<tr>
+					<td>{{ .CreatedAt }}</td>
+					<td>
+						<form action="/web/me/revokeAppPassword" method="POST">
+							<input type="hidden" name="_csrf" value="{{ $.csrfToken }}">
+							<input type="hidden" name="id" value="{{ .ID }}">
+							<button class="Button ButtonSmall">
+								Revoke
+							</button>
+						</form>
+					</td>
+				</tr>
+				{{ end }}
+			</tbody>
+		</table>
+	</div>
+</div>
+
 {{ template "_layout_end.html" . }}

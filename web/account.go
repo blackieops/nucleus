@@ -1,7 +1,11 @@
 package web
 
 import (
+	"fmt"
+	"strconv"
+
 	"com.blackieops.nucleus/auth"
+	"com.blackieops.nucleus/nxc"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 )
@@ -9,8 +13,9 @@ import (
 func (r *WebRouter) handleAccountEdit(c *gin.Context) {
 	s := sessions.Default(c)
 	user := r.Auth.GetCurrentUser(c)
+	nxcPasswords, _ := nxc.ListNextcloudAppPasswordsForUser(r.DBContext, user)
 	csrfToken := s.Get("CSRFToken")
-	c.HTML(200, "account_edit.html", gin.H{"user": user, "csrfToken": csrfToken})
+	c.HTML(200, "account_edit.html", gin.H{"user": user, "csrfToken": csrfToken, "appPasswords": nxcPasswords})
 }
 
 func (r *WebRouter) handleAccountUpdate(c *gin.Context) {
@@ -43,4 +48,28 @@ func (r *WebRouter) handleAccountUpdate(c *gin.Context) {
 		}
 	}
 	c.Redirect(302, "/web/")
+}
+
+func (r *WebRouter) handleAccountRevokeAppPassword(c *gin.Context) {
+	user := r.Auth.GetCurrentUser(c)
+	s := sessions.Default(c)
+	id, err := strconv.Atoi(c.PostForm("id"))
+	if err != nil {
+		s.AddFlash(fmt.Sprintf("Could not revoke Nextcloud App Password: %v", err))
+		c.Redirect(302, "/web/me")
+		return
+	}
+	password, err := nxc.FindNextcloudAppPassword(r.DBContext, user, uint(id))
+	if err != nil {
+		s.AddFlash(fmt.Sprintf("Could not revoke Nextcloud App Password: %v", err))
+		c.Redirect(302, "/web/me")
+		return
+	}
+	err = nxc.DeleteNextcloudAppPassword(r.DBContext, password)
+	if err != nil {
+		s.AddFlash(fmt.Sprintf("Could not revoke Nextcloud App Password: %v", err))
+		c.Redirect(302, "/web/me")
+		return
+	}
+	c.Redirect(302, "/web/me")
 }
