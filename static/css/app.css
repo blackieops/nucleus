@@ -130,6 +130,10 @@ table {
 	display: flex;
 	justify-content: flex-end;
 	text-align: right;
+	gap: 2rem;
+}
+.FormActionsCentre {
+	justify-content: center;
 }
 
 .FormLayout {
@@ -190,6 +194,12 @@ table {
 	padding: 0.25em 1em;
 }
 
+.ButtonSecondary {
+	border-color: black;
+	background-color: white;
+	color: black;
+}
+
 /**
  * Section Header component
  */
@@ -199,6 +209,30 @@ table {
 	justify-content: space-between;
 	padding-bottom: 2rem;
 }
+
+.HeroHeader {
+	padding: 4rem 0;
+	font-size: 1.25rem;
+	max-width: 50rem;
+}
+	.HeroHeader h2 {
+		margin: 0 0 1rem 0;
+		font-size: 2em;
+	}
+	.HeroHeader p {
+		line-height: 1.5em;
+	}
+
+.HeroHeader--TitleWithIcon {
+	display: flex;
+	align-items: center;
+}
+	.HeroHeader--TitleWithIcon svg {
+		width: 1em;
+		height: 1em;
+		margin-right: 0.25em;
+		color: green;
+	}
 
 /**
  * Alert component

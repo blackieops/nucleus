@@ -1,6 +1,23 @@
-<h1>grant</h1>
+{{ template "_layout_begin.html" . }}
+
+<header class="HeroHeader">
+	<h2>Grant Nextcloud Access?</h2>
+
+	<p>
+		By granting access, you will allow <strong>Nextcloud</strong> full
+		access to your files and account data. You can revoke this access at
+		any time in your account settings.
+	</p>
+</header>
 
 <form action="" method="POST">
+	<input type="hidden" name="_csrf" value="{{ .csrfToken }}">
 	<input type="hidden" name="token" value="{{ .Token }}">
-	<input type="submit" value="yes">
+
+	<footer class="FormActions FormActionsCentre">
+		<a class="Button ButtonSecondary" href="/web/">Reject</a>
+		<input class="Button" type="submit" value="Grant Access">
+	</footer>
 </form>
+
+{{ template "_layout_end.html" . }}
