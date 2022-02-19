@@ -1,6 +1,7 @@
 package nxc
 
 import (
+	"fmt"
 	"net/http"
 	"strconv"
 	"strings"
@@ -67,6 +68,34 @@ func (n *NextcloudRouter) Mount(r *gin.RouterGroup) {
 		}
 		DestroyNextcloudAuthSession(n.DBContext, session)
 		c.JSON(200, payload)
+	})
+
+	// This is the "not v2" (V1?) login flow, which does a native protocol
+	// redirect at the end with the username and password for the native app to
+	// use. Since we implemented this after V2, this basically just does a
+	// compressed V2 flow all in one step to reuse the same concepts.
+	//
+	// This appears to only be used by the mobile apps.
+	r.GET("/index.php/login/flow", n.Auth.EnsureSession, func(c *gin.Context) {
+		user := mw.GetCurrentUser(c)
+		authSession, err := CreateNextcloudAuthSession(n.DBContext)
+		if err != nil {
+			c.JSON(http.StatusUnprocessableEntity, gin.H{"error": err.Error()})
+			return
+		}
+		_, err = CreateNextcloudAppPassword(n.DBContext, authSession, user)
+		if err != nil {
+			c.JSON(http.StatusUnprocessableEntity, gin.H{"error": err.Error()})
+			return
+		}
+		serverURL := n.Config.BaseURL + "/nextcloud"
+		nativeTargetURL := fmt.Sprintf(
+			"nc://login/server:%s&user:%s&password:%s",
+			serverURL,
+			user.Username,
+			authSession.RawAppPassword,
+		)
+		c.Redirect(302, nativeTargetURL)
 	})
 
 	r.GET("/index.php/login/v2/grant", n.Auth.EnsureSession, func(c *gin.Context) {
