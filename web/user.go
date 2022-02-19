@@ -1,13 +1,13 @@
 package web
 
 import (
-	"strconv"
 	"fmt"
 	"net/http"
+	"strconv"
 
 	"com.blackieops.nucleus/auth"
-	"github.com/gin-gonic/gin"
 	"github.com/gin-contrib/sessions"
+	"github.com/gin-gonic/gin"
 )
 
 func (r *WebRouter) handleUserAvatarShow(c *gin.Context) {
@@ -50,8 +50,8 @@ func (r *WebRouter) handleUsersNew(c *gin.Context) {
 func (r *WebRouter) handleUsersCreate(c *gin.Context) {
 	user := &auth.User{
 		EmailAddress: c.PostForm("emailAddress"),
-		Username: c.PostForm("username"),
-		Name: c.PostForm("name"),
+		Username:     c.PostForm("username"),
+		Name:         c.PostForm("name"),
 	}
 	user, err := auth.CreateUser(r.DBContext, user)
 	s := sessions.Default(c)
