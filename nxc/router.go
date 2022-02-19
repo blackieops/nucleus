@@ -148,6 +148,9 @@ func (n *NextcloudRouter) Mount(r *gin.RouterGroup) {
 		Middleware: mw,
 	}
 
+	r.Handle("PROPFIND", "/remote.php/dav/files/:username",
+		mw.EnsureAuthorization(), webdavRouter.HandlePropfind)
+
 	r.Handle("PROPFIND", "/remote.php/dav/files/:username/*filePath",
 		mw.EnsureAuthorization(), webdavRouter.HandlePropfind)
 
