@@ -19,6 +19,9 @@ table {
 	table td {
 		padding: 0.5rem 0;
 	}
+	table tr:hover td {
+		background-color: whitesmoke;
+	}
 
 /**
  * General Layout
