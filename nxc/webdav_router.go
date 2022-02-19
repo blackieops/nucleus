@@ -114,6 +114,7 @@ func (wr *WebdavRouter) HandlePut(c *gin.Context) {
 		panic(err)
 	}
 	c.Header("etag", file.Digest)
+	c.Header("oc-fileid", fmt.Sprint(file.ID))
 	c.Status(http.StatusOK)
 }
 
