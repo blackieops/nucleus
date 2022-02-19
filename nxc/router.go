@@ -10,6 +10,7 @@ import (
 	"com.blackieops.nucleus/config"
 	"com.blackieops.nucleus/data"
 	"com.blackieops.nucleus/files"
+	"com.blackieops.nucleus/media"
 	"github.com/gin-gonic/gin"
 )
 
@@ -141,6 +142,40 @@ func (n *NextcloudRouter) Mount(r *gin.RouterGroup) {
 			"Content-Disposition": `attachment; filename="avatar.png"`,
 		}
 		c.DataFromReader(http.StatusOK, contentLength, contentType, reader, extraHeaders)
+	})
+
+	r.GET("/index.php/core/preview.png", mw.EnsureAuthorization(), func(c *gin.Context) {
+		user := mw.GetCurrentUser(c)
+		fileName := c.Query("file")
+		sizeXRaw := c.Query("x")
+		sizeYRaw := c.Query("y")
+		sizeX, err := strconv.Atoi(sizeXRaw)
+		if err != nil {
+			c.AbortWithStatus(http.StatusBadRequest)
+			return
+		}
+		sizeY, err := strconv.Atoi(sizeYRaw)
+		if err != nil {
+			c.AbortWithStatus(http.StatusBadRequest)
+			return
+		}
+		file, err := files.FindFileByPath(n.DBContext, user, fileName)
+		if err != nil {
+			c.AbortWithStatus(http.StatusBadRequest)
+			return
+		}
+
+		sourceReader, err := n.StorageBackend.ReaderFile(user, file)
+		defer sourceReader.Close()
+		err = media.GeneratePreview(
+			sourceReader,
+			c.Writer,
+			&media.PreviewOptions{Width: sizeX, Height: sizeY},
+		)
+		if err != nil {
+			c.AbortWithStatus(http.StatusUnprocessableEntity)
+			return
+		}
 	})
 
 	webdavRouter := &WebdavRouter{

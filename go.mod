@@ -6,6 +6,7 @@ require (
 	github.com/gin-contrib/sessions v0.0.4
 	github.com/gin-gonic/gin v1.7.7
 	golang.org/x/crypto v0.0.0-20210921155107-089bfa567519
+	golang.org/x/image v0.0.0-20211028202545-6944b10bf410
 	gopkg.in/yaml.v2 v2.2.8
 	gorm.io/driver/postgres v1.2.3
 	gorm.io/gorm v1.22.5

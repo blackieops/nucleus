@@ -2,6 +2,7 @@ package files
 
 import (
 	"errors"
+	"io"
 	"io/fs"
 	"io/ioutil"
 	"os"
@@ -29,6 +30,12 @@ func (b *FilesystemBackend) Stat(user *auth.User, path string) (fs.FileInfo, err
 
 func (b *FilesystemBackend) ReadFile(user *auth.User, file *File) ([]byte, error) {
 	return ioutil.ReadFile(b.userStoragePath(user, file.FullName))
+}
+
+// Sometimes you need a reader instead of the actual entire file contents. Make
+// sure you call `file.Close()` on the returned Reader when you are done.
+func (b *FilesystemBackend) ReaderFile(user *auth.User, file *File) (io.ReadCloser, error) {
+	return os.Open(b.userStoragePath(user, file.FullName))
 }
 
 func (b *FilesystemBackend) WriteFile(user *auth.User, file *File, contents []byte) error {
