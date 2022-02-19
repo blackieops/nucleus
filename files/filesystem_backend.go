@@ -36,7 +36,7 @@ func (b *FilesystemBackend) WriteFile(user *auth.User, file *File, contents []by
 }
 
 func (b *FilesystemBackend) CreateDirectory(user *auth.User, dir *Directory) error {
-	err := os.Mkdir(b.userStoragePath(user, dir.FullName), 0755)
+	err := os.MkdirAll(b.userStoragePath(user, dir.FullName), 0755)
 	if err != nil {
 		return err
 	}

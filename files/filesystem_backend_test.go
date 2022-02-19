@@ -60,7 +60,7 @@ func TestFilesystemBackendWriteReadAndDeleteFile(t *testing.T) {
 }
 
 func TestFilesystemBackendCreateStatAndDeleteDirectory(t *testing.T) {
-	dir := &Directory{FullName: "My Documents"}
+	dir := &Directory{FullName: "My Documents/Receipts"}
 	err := service.CreateDirectory(testUser, dir)
 	if err != nil {
 		t.Errorf("CreateDirectory failed: %v", err)
