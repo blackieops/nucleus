@@ -99,8 +99,9 @@ func (n *NextcloudRouter) Mount(r *gin.RouterGroup) {
 	})
 
 	r.GET("/index.php/login/v2/grant", n.Auth.EnsureSession, func(c *gin.Context) {
+		user := mw.GetCurrentUser(c)
 		token := c.Query("token")
-		c.HTML(200, "nextcloud_grant.html", gin.H{"Token": token})
+		c.HTML(200, "nextcloud_grant.html", gin.H{"user": user, "Token": token})
 	})
 
 	r.POST("/index.php/login/v2/grant", n.Auth.EnsureSession, func(c *gin.Context) {
@@ -111,7 +112,7 @@ func (n *NextcloudRouter) Mount(r *gin.RouterGroup) {
 			return
 		}
 		CreateNextcloudAppPassword(n.DBContext, authSession, user)
-		c.HTML(201, "nextcloud_grant_success.html", gin.H{})
+		c.HTML(201, "nextcloud_grant_success.html", gin.H{"user": user})
 	})
 
 	r.GET("/ocs/v1.php/cloud/capabilities", func(c *gin.Context) {
