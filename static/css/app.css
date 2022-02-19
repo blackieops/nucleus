@@ -143,6 +143,9 @@ table {
 	display: flex;
 	align-items: flex-start;
 }
+	.FormLayout:not(:first-child) {
+		margin-top: 4rem;
+	}
 
 .FormLayout--Description,
 .FormLayout--Fields {
@@ -152,6 +155,7 @@ table {
 
 .FormLayout--Description {
 	padding-top: 1rem;
+	padding-right: 1rem;
 	width: 40%;
 }
 	.FormLayout--Description p {
