@@ -34,7 +34,44 @@ var rootDirectory = files.Directory{
 	UpdatedAt: time.Date(1970, time.January, 1, 0, 0, 0, 0, time.UTC),
 }
 
-func (wr *WebdavRouter) HandlePropfind(c *gin.Context) {
+func (wr *WebdavRouter) Mount(r *gin.RouterGroup) {
+	r.Handle("PROPFIND", "/files/:username",
+		wr.Middleware.EnsureAuthorization(), wr.handlePropfind)
+
+	r.Handle("PROPFIND", "/files/:username/*filePath",
+		wr.Middleware.EnsureAuthorization(), wr.handlePropfind)
+
+	//r.Handle("PROPPATCH", "/remote.php/dav/files/:username/*filePath", forwardToWebdav)
+
+	r.Handle("GET", "/files/:username/*filePath",
+		wr.Middleware.EnsureAuthorization(), wr.handleGet)
+
+	r.Handle("PUT", "/files/:username/*filePath",
+		wr.Middleware.EnsureAuthorization(), wr.handlePut)
+
+	r.Handle("MKCOL", "/files/:username/*filePath",
+		wr.Middleware.EnsureAuthorization(), wr.handleMkcol)
+
+	r.Handle("DELETE", "/files/:username/*filePath",
+		wr.Middleware.EnsureAuthorization(), wr.handleDelete)
+
+	r.Handle("MOVE", "/files/:username/*filePath",
+		wr.Middleware.EnsureAuthorization(), wr.handleMove)
+
+	// r.Handle("COPY", "/files/:username/*filePath",
+	//	wr.Middleware.EnsureAuthorization(), wr.handleCopy)
+
+	r.Handle("MKCOL", "/uploads/:username/*filePath",
+		wr.Middleware.EnsureAuthorization(), wr.handleChunkMkcol)
+
+	r.Handle("PUT", "/uploads/:username/*filePath",
+		wr.Middleware.EnsureAuthorization(), wr.handleChunkPut)
+
+	r.Handle("MOVE", "/uploads/:username/*filePath",
+		wr.Middleware.EnsureAuthorization(), wr.handleChunkMove)
+}
+
+func (wr *WebdavRouter) handlePropfind(c *gin.Context) {
 	w := c.Writer
 	w.WriteHeader(http.StatusMultiStatus)
 	w.Header().Add("content-type", "application/xml; charset=utf-8")
@@ -75,7 +112,7 @@ func (wr *WebdavRouter) HandlePropfind(c *gin.Context) {
 	w.Write(x)
 }
 
-func (wr *WebdavRouter) HandleGet(c *gin.Context) {
+func (wr *WebdavRouter) handleGet(c *gin.Context) {
 	user := wr.Middleware.GetCurrentUser(c)
 	file, err := files.FindFileByPath(wr.DBContext, user, c.Params.ByName("filePath")[1:])
 	if err != nil {
@@ -90,7 +127,7 @@ func (wr *WebdavRouter) HandleGet(c *gin.Context) {
 	c.Writer.Write(fileBytes)
 }
 
-func (wr *WebdavRouter) HandlePut(c *gin.Context) {
+func (wr *WebdavRouter) handlePut(c *gin.Context) {
 	user := wr.Middleware.GetCurrentUser(c)
 	filePath := c.Params.ByName("filePath")[1:]
 	contents, err := ioutil.ReadAll(c.Request.Body)
@@ -118,7 +155,7 @@ func (wr *WebdavRouter) HandlePut(c *gin.Context) {
 	c.Status(http.StatusOK)
 }
 
-func (wr *WebdavRouter) HandleMkcol(c *gin.Context) {
+func (wr *WebdavRouter) handleMkcol(c *gin.Context) {
 	user := wr.Middleware.GetCurrentUser(c)
 	filePath := c.Params.ByName("filePath")[1:]
 	_, err := files.FindDirByPath(wr.DBContext, user, filePath)
@@ -149,7 +186,7 @@ func (wr *WebdavRouter) HandleMkcol(c *gin.Context) {
 	c.Status(http.StatusCreated)
 }
 
-func (wr *WebdavRouter) HandleDelete(c *gin.Context) {
+func (wr *WebdavRouter) handleDelete(c *gin.Context) {
 	user := wr.Middleware.GetCurrentUser(c)
 	path := c.Params.ByName("filePath")[1:]
 	err := files.DeletePath(wr.DBContext, user, path)
@@ -167,7 +204,7 @@ func (wr *WebdavRouter) HandleDelete(c *gin.Context) {
 	c.Status(http.StatusNoContent)
 }
 
-func (wr *WebdavRouter) HandleMove(c *gin.Context) {
+func (wr *WebdavRouter) handleMove(c *gin.Context) {
 	user := wr.Middleware.GetCurrentUser(c)
 	dest := strings.TrimPrefix(
 		c.Request.Header.Get("Destination"),
@@ -197,14 +234,14 @@ func (wr *WebdavRouter) HandleMove(c *gin.Context) {
 	c.Status(http.StatusCreated)
 }
 
-func (wr *WebdavRouter) HandleChunkMkcol(c *gin.Context) {
+func (wr *WebdavRouter) handleChunkMkcol(c *gin.Context) {
 	user := wr.Middleware.GetCurrentUser(c)
 	name := filepath.Base(c.Params.ByName("filePath")[1:])
 	wr.Backend.CreateChunkDirectory(user, name)
 	c.Status(http.StatusCreated)
 }
 
-func (wr *WebdavRouter) HandleChunkPut(c *gin.Context) {
+func (wr *WebdavRouter) handleChunkPut(c *gin.Context) {
 	user := wr.Middleware.GetCurrentUser(c)
 	contents, err := ioutil.ReadAll(c.Request.Body)
 	if err != nil {
@@ -217,7 +254,7 @@ func (wr *WebdavRouter) HandleChunkPut(c *gin.Context) {
 	}
 }
 
-func (wr *WebdavRouter) HandleChunkMove(c *gin.Context) {
+func (wr *WebdavRouter) handleChunkMove(c *gin.Context) {
 	user := wr.Middleware.GetCurrentUser(c)
 	dest := strings.TrimPrefix(
 		c.Request.Header.Get("Destination"),
