@@ -110,7 +110,7 @@ func (n *NextcloudRouter) handleLoginV2Poll(c *gin.Context) {
 	token := c.PostForm("token")
 	session, err := FindNextcloudAuthSessionByPollToken(n.DBContext, token)
 	if err != nil || session.RawAppPassword == "" {
-		c.JSON(404, make([]string, 0))
+		c.AbortWithStatus(http.StatusNotFound)
 		return
 	}
 	payload := &PollSuccessResponse{
@@ -118,8 +118,12 @@ func (n *NextcloudRouter) handleLoginV2Poll(c *gin.Context) {
 		Username: session.Username,
 		Password: session.RawAppPassword,
 	}
-	DestroyNextcloudAuthSession(n.DBContext, session)
-	c.JSON(200, payload)
+	err = DestroyNextcloudAuthSession(n.DBContext, session)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusUnprocessableEntity, gin.H{"error": err})
+		return
+	}
+	c.JSON(http.StatusOK, payload)
 }
 
 func (n *NextcloudRouter) handleLoginV2Grant(mw *Middleware) func(*gin.Context) {
