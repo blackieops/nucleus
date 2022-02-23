@@ -12,9 +12,9 @@ import (
 	"strings"
 	"time"
 
-	"com.blackieops.nucleus/data"
-	"com.blackieops.nucleus/files"
-	"com.blackieops.nucleus/webdav"
+	"go.b8s.dev/nucleus/data"
+	"go.b8s.dev/nucleus/files"
+	"go.b8s.dev/nucleus/webdav"
 	"github.com/gin-gonic/gin"
 )
 

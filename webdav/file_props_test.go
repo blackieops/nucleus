@@ -4,7 +4,7 @@ import (
 	"testing"
 	"time"
 
-	"com.blackieops.nucleus/files"
+	"go.b8s.dev/nucleus/files"
 )
 
 func TestFilePropHandlers(t *testing.T) {

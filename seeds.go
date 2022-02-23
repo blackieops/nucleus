@@ -1,8 +1,8 @@
 package main
 
 import (
-	"com.blackieops.nucleus/auth"
-	"com.blackieops.nucleus/data"
+	"go.b8s.dev/nucleus/auth"
+	"go.b8s.dev/nucleus/data"
 )
 
 func seedData(c *data.Context) {

@@ -4,7 +4,7 @@ import (
 	"regexp"
 	"testing"
 
-	"com.blackieops.nucleus/auth"
+	"go.b8s.dev/nucleus/auth"
 )
 
 var testUser *auth.User = &auth.User{Username: "test"}

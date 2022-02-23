@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"time"
 
-	"com.blackieops.nucleus/data"
+	"go.b8s.dev/nucleus/data"
 )
 
 type User struct {

@@ -1,9 +1,9 @@
 package web
 
 import (
-	"com.blackieops.nucleus/auth"
-	"com.blackieops.nucleus/data"
-	"com.blackieops.nucleus/internal/csrf"
+	"go.b8s.dev/nucleus/auth"
+	"go.b8s.dev/nucleus/data"
+	"go.b8s.dev/nucleus/internal/csrf"
 	"github.com/gin-gonic/gin"
 )
 

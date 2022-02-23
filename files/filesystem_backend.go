@@ -7,7 +7,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"com.blackieops.nucleus/auth"
+	"go.b8s.dev/nucleus/auth"
 )
 
 type FilesystemBackend struct {

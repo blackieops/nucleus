@@ -3,7 +3,7 @@ package files
 import (
 	"io/fs"
 
-	"com.blackieops.nucleus/auth"
+	"go.b8s.dev/nucleus/auth"
 )
 
 type StorageBackend interface {

@@ -6,10 +6,10 @@ import (
 	"strconv"
 	"strings"
 
-	"com.blackieops.nucleus/auth"
-	"com.blackieops.nucleus/config"
-	"com.blackieops.nucleus/data"
-	"com.blackieops.nucleus/files"
+	"go.b8s.dev/nucleus/auth"
+	"go.b8s.dev/nucleus/config"
+	"go.b8s.dev/nucleus/data"
+	"go.b8s.dev/nucleus/files"
 	"github.com/gin-gonic/gin"
 )
 

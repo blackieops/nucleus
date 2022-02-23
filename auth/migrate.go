@@ -1,7 +1,7 @@
 package auth
 
 import (
-	"com.blackieops.nucleus/data"
+	"go.b8s.dev/nucleus/data"
 )
 
 func AutoMigrate(c *data.Context) {

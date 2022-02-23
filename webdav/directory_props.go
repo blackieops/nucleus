@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"time"
 
-	"com.blackieops.nucleus/auth"
-	"com.blackieops.nucleus/files"
+	"go.b8s.dev/nucleus/auth"
+	"go.b8s.dev/nucleus/files"
 )
 
 // A mapping of property name to a function that takes the directory and

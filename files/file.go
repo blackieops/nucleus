@@ -4,7 +4,7 @@ import (
 	"path/filepath"
 	"time"
 
-	"com.blackieops.nucleus/auth"
+	"go.b8s.dev/nucleus/auth"
 )
 
 type File struct {

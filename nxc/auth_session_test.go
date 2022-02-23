@@ -3,8 +3,8 @@ package nxc
 import (
 	"testing"
 
-	"com.blackieops.nucleus/data"
-	testUtils "com.blackieops.nucleus/internal/testing"
+	"go.b8s.dev/nucleus/data"
+	testUtils "go.b8s.dev/nucleus/internal/testing"
 )
 
 func TestCreateNextcloudAuthSession(t *testing.T) {

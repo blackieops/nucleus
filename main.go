@@ -3,11 +3,11 @@ package main
 import (
 	"flag"
 
-	"com.blackieops.nucleus/auth"
-	"com.blackieops.nucleus/config"
-	"com.blackieops.nucleus/data"
-	"com.blackieops.nucleus/files"
-	"com.blackieops.nucleus/nxc"
+	"go.b8s.dev/nucleus/auth"
+	"go.b8s.dev/nucleus/config"
+	"go.b8s.dev/nucleus/data"
+	"go.b8s.dev/nucleus/files"
+	"go.b8s.dev/nucleus/nxc"
 	"github.com/gin-contrib/sessions/cookie"
 )
 

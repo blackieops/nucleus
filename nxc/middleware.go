@@ -5,8 +5,8 @@ import (
 	"net/http"
 	"strings"
 
-	"com.blackieops.nucleus/auth"
-	"com.blackieops.nucleus/data"
+	"go.b8s.dev/nucleus/auth"
+	"go.b8s.dev/nucleus/data"
 	"github.com/gin-gonic/gin"
 )
 

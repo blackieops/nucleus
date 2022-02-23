@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"strconv"
 
-	"com.blackieops.nucleus/auth"
-	"com.blackieops.nucleus/nxc"
+	"go.b8s.dev/nucleus/auth"
+	"go.b8s.dev/nucleus/nxc"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 )

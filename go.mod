@@ -1,4 +1,4 @@
-module com.blackieops.nucleus
+module go.b8s.dev/nucleus
 
 go 1.17
 

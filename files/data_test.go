@@ -3,9 +3,9 @@ package files
 import (
 	"testing"
 
-	"com.blackieops.nucleus/auth"
-	"com.blackieops.nucleus/data"
-	testUtils "com.blackieops.nucleus/internal/testing"
+	"go.b8s.dev/nucleus/auth"
+	"go.b8s.dev/nucleus/data"
+	testUtils "go.b8s.dev/nucleus/internal/testing"
 )
 
 func TestDeleteFile(t *testing.T) {

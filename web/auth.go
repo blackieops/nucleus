@@ -1,7 +1,7 @@
 package web
 
 import (
-	"com.blackieops.nucleus/auth"
+	"go.b8s.dev/nucleus/auth"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 )

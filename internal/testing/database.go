@@ -3,8 +3,8 @@ package testing
 import (
 	"errors"
 
-	"com.blackieops.nucleus/config"
-	"com.blackieops.nucleus/data"
+	"go.b8s.dev/nucleus/config"
+	"go.b8s.dev/nucleus/data"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )

@@ -3,8 +3,8 @@ package webdav
 import (
 	"time"
 
-	"com.blackieops.nucleus/auth"
-	"com.blackieops.nucleus/files"
+	"go.b8s.dev/nucleus/auth"
+	"go.b8s.dev/nucleus/files"
 )
 
 // A "fake" directory to be used as the user's root directory handle, as the

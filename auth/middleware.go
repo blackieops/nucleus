@@ -1,8 +1,8 @@
 package auth
 
 import (
-	"com.blackieops.nucleus/config"
-	"com.blackieops.nucleus/data"
+	"go.b8s.dev/nucleus/config"
+	"go.b8s.dev/nucleus/data"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 )

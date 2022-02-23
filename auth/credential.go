@@ -4,7 +4,7 @@ import (
 	"errors"
 	"time"
 
-	"com.blackieops.nucleus/data"
+	"go.b8s.dev/nucleus/data"
 	"golang.org/x/crypto/bcrypt"
 )
 
