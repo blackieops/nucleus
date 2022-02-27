@@ -57,6 +57,10 @@ func (nr *NucleusRouter) Configure() {
 	}
 	webRouter.Mount(nr.router.Group("/web"))
 
+	nr.router.GET("/healthz", func(c *gin.Context) {
+		c.JSON(http.StatusOK, gin.H{"alive": true})
+	})
+
 	nr.router.GET("/", func(c *gin.Context) {
 		// If you hit the root path, you probably wanted the web app.
 		c.Redirect(302, "/web/")
