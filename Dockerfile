@@ -12,3 +12,4 @@ RUN apt-get update && \
 ENV GIN_MODE=release
 COPY --from=0 /src/nucleus /usr/bin/nucleus
 ENTRYPOINT ["/usr/bin/nucleus"]
+CMD ["-config", "/etc/nucleus/config.yaml"]
