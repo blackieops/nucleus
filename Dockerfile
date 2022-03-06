@@ -9,5 +9,6 @@ RUN apt-get update && \
 	apt-get upgrade && \
 	apt-get install -y ca-certificates && \
 	apt-get clean
+ENV GIN_MODE=release
 COPY --from=0 /src/nucleus /usr/bin/nucleus
 ENTRYPOINT ["/usr/bin/nucleus"]
