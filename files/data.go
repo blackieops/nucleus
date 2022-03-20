@@ -51,12 +51,6 @@ func ListDirectories(ctx *data.Context, user *auth.User, dir *Directory) []*Dire
 	return entries
 }
 
-func FindFile(ctx *data.Context, id int) (*File, error) {
-	var file *File
-	err := ctx.DB.First(&file, id).Error
-	return file, err
-}
-
 func FindFileByPath(ctx *data.Context, user *auth.User, path string) (*File, error) {
 	var file *File
 	err := ctx.DB.Where("user_id = ? and full_name = ?", user.ID, path).First(&file).Error
