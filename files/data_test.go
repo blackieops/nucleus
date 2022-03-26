@@ -15,13 +15,24 @@ func TestDeleteFile(t *testing.T) {
 		if err != nil {
 			t.Errorf("Failed to setup test user: %v", err)
 		}
+		wrongUser := &auth.User{Name: "Wrong", Username: "wrong", EmailAddress: "wrong@example.com"}
+		wrongUser, err = auth.CreateUser(ctx, wrongUser)
+		if err != nil {
+			t.Errorf("Failed to setup test user: %v", err)
+		}
 		file, err := CreateFile(ctx, &File{Name: "butt.txt", FullName: "butt.txt", User: *user})
 		if err != nil {
 			t.Errorf("Failed to setup test file: %v", err)
 		}
-		err = DeleteFile(ctx, testUser, file)
+		DeleteFile(ctx, wrongUser, file)
+		_, err = FindFileByPath(ctx, user, file.FullName)
 		if err != nil {
-			t.Errorf("Failed to delete file: %v", err)
+			t.Errorf("Allowed user to delete file they didn't own!")
+		}
+		DeleteFile(ctx, user, file)
+		_, err = FindFileByPath(ctx, user, file.FullName)
+		if err == nil {
+			t.Errorf("Failed to delete file!")
 		}
 	})
 }
@@ -33,29 +44,25 @@ func TestDeleteDirectory(t *testing.T) {
 		if err != nil {
 			t.Errorf("Failed to setup test user: %v", err)
 		}
+		wrongUser := &auth.User{Name: "Wrong", Username: "wrong", EmailAddress: "wrong@example.com"}
+		wrongUser, err = auth.CreateUser(ctx, wrongUser)
+		if err != nil {
+			t.Errorf("Failed to setup test user: %v", err)
+		}
 		dir, err := CreateDir(ctx, &Directory{Name: "things", FullName: "things", User: *user})
 		if err != nil {
 			t.Errorf("Failed to setup test directory: %v", err)
 		}
-		subdir, err := CreateDir(ctx, &Directory{Name: "more things", FullName: "things/more things", User: *user, Parent: dir})
+		DeleteDirectory(ctx, wrongUser, dir)
+		_, err = FindDirByPath(ctx, user, dir.FullName)
 		if err != nil {
-			t.Errorf("Failed to setup test sub-directory: %v", err)
+			t.Errorf("Allowed user to delete directory they didn't own!")
+			return
 		}
-		file, err := CreateFile(ctx, &File{Name: "butt.txt", FullName: "things/butt.txt", User: *user, Parent: dir})
-		if err != nil {
-			t.Errorf("Failed to setup test file: %v", err)
-		}
-		err = DeleteDirectory(ctx, testUser, dir)
-		if err != nil {
-			t.Errorf("Failed to delete directory: %v", err)
-		}
-		err = ctx.DB.Where("id = ?", file.ID).First(&file).Error
+		DeleteDirectory(ctx, user, dir)
+		_, err = FindDirByPath(ctx, user, dir.FullName)
 		if err == nil {
-			t.Errorf("Directory did not delete its files!")
-		}
-		err = ctx.DB.Where("id = ?", subdir.ID).First(&subdir).Error
-		if err == nil {
-			t.Errorf("Directory did not delete its subdirectories!")
+			t.Errorf("Failed to delete directory!")
 		}
 	})
 }

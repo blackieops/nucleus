@@ -58,11 +58,11 @@ func FindFileByPath(ctx *data.Context, user *auth.User, path string) (*File, err
 }
 
 func DeleteFile(ctx *data.Context, user *auth.User, file *File) error {
-	return ctx.DB.Where("id = ?", file.ID).Delete(file).Error
+	return ctx.DB.Where("user_id = ? and id = ?", user.ID, file.ID).Delete(file).Error
 }
 
 func DeleteDirectory(ctx *data.Context, user *auth.User, dir *Directory) error {
-	return ctx.DB.Where("id = ?", dir.ID).Delete(dir).Error
+	return ctx.DB.Where("user_id = ? and id = ?", user.ID, dir.ID).Delete(dir).Error
 }
 
 func DeletePath(ctx *data.Context, user *auth.User, path string) error {
