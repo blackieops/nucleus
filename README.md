@@ -1,5 +1,7 @@
 # nucleus: self-hosted file storage backend
 
+[![Test Suite](https://github.com/blackieops/nucleus/actions/workflows/tests.yml/badge.svg)](https://github.com/blackieops/nucleus/actions/workflows/tests.yml)
+
 Nucleus helps you sync and store your files on your own infrastructure.
 
 ⚠️ **Warning:** this is a very early-stage project that is NOT feature complete,
