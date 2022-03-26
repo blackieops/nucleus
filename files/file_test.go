@@ -37,3 +37,13 @@ func TestFileSetNames(t *testing.T) {
 		t.Errorf("SetNames did something bad to the .Name, value was %v", file.Name)
 	}
 }
+
+func TestFileSetDigest(t *testing.T) {
+	content := []byte("test contents\n")
+	expectedDigest := "40b44f15b4b6690a90792137a03d57c4d2918271"
+	file := &File{}
+	file.SetDigest(content)
+	if file.Digest != expectedDigest {
+		t.Errorf("SetDigest did not have expected digest: %v", file.Digest)
+	}
+}

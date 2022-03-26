@@ -1,7 +1,6 @@
 package files
 
 import (
-	"crypto/sha1"
 	"fmt"
 	"io/fs"
 	"path/filepath"
@@ -87,8 +86,7 @@ func (c *Crawler) DiscoverFile(user *auth.User, dir *Directory, name string) (*F
 	if err != nil {
 		return nil, err
 	}
-	digest := sha1.Sum(fileContents)
-	fileEntity.Digest = fmt.Sprintf("%x", digest[:])
+	fileEntity.SetDigest(fileContents)
 	return fileEntity, nil
 }
 

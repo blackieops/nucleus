@@ -1,6 +1,8 @@
 package files
 
 import (
+	"fmt"
+	"crypto/sha1"
 	"path/filepath"
 	"time"
 
@@ -40,4 +42,11 @@ func (f *File) SetNames(name string) {
 		return
 	}
 	f.FullName = filepath.Join(f.Parent.FullName, name)
+}
+
+// SetDigest will calculate the SHA-1 digest of the given byte array content
+// and assign the result to `Digest`.
+func (f *File) SetDigest(content []byte) {
+	digest := sha1.Sum(content)
+	f.Digest = fmt.Sprintf("%x", digest[:])
 }
