@@ -11,7 +11,10 @@ var testUser *auth.User = &auth.User{Username: "test"}
 var service StorageBackend = &FilesystemBackend{StoragePrefix: "internal/_testdata"}
 
 func TestFilesystemBackendList(t *testing.T) {
-	entries := service.List(testUser, "Pictures")
+	entries, err := service.List(testUser, "Pictures")
+	if err != nil {
+		t.Errorf("Error while calling List: %v", err)
+	}
 	if len(entries) != 2 {
 		t.Errorf("List returned incorrect entry count: %d", len(entries))
 	}

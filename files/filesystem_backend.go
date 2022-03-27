@@ -14,12 +14,12 @@ type FilesystemBackend struct {
 	StoragePrefix string
 }
 
-func (b *FilesystemBackend) List(user *auth.User, path string) []fs.FileInfo {
+func (b *FilesystemBackend) List(user *auth.User, path string) ([]fs.FileInfo, error) {
 	entries, err := ioutil.ReadDir(b.userStoragePath(user, path))
 	if err != nil {
-		panic(err)
+		return []fs.FileInfo{}, err
 	}
-	return entries
+	return entries, nil
 }
 
 func (b *FilesystemBackend) Stat(user *auth.User, path string) (fs.FileInfo, error) {

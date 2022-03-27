@@ -7,7 +7,7 @@ import (
 )
 
 type StorageBackend interface {
-	List(*auth.User, string) []fs.FileInfo
+	List(*auth.User, string) ([]fs.FileInfo, error)
 	Stat(*auth.User, string) (fs.FileInfo, error)
 	ReadFile(*auth.User, *File) ([]byte, error)
 	WriteFile(*auth.User, *File, []byte) error

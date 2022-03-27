@@ -26,10 +26,14 @@ func (c *Crawler) ReindexAll() {
 func (c *Crawler) IndexUserFiles(user *auth.User, currentDir *Directory) {
 	var wg sync.WaitGroup
 	var entries []fs.FileInfo
+	var err error
 	if currentDir == nil {
-		entries = c.Backend.List(user, "")
+		entries, err = c.Backend.List(user, "")
 	} else {
-		entries = c.Backend.List(user, currentDir.FullName)
+		entries, err = c.Backend.List(user, currentDir.FullName)
+	}
+	if err != nil {
+		panic(err)
 	}
 
 	for _, entry := range entries {
