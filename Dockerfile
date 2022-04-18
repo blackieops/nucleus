@@ -6,7 +6,7 @@ RUN go build -a --installsuffix cgo --ldflags="-s" -o nucleus
 
 FROM debian:11-slim
 RUN apt-get update && \
-	apt-get upgrade && \
+	apt-get upgrade -y && \
 	apt-get install -y ca-certificates && \
 	apt-get clean
 ENV GIN_MODE=release
