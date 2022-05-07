@@ -12,10 +12,10 @@ import (
 	"strings"
 	"time"
 
+	"github.com/gin-gonic/gin"
 	"go.b8s.dev/nucleus/data"
 	"go.b8s.dev/nucleus/files"
 	"go.b8s.dev/nucleus/webdav"
-	"github.com/gin-gonic/gin"
 )
 
 type WebdavRouter struct {

@@ -1,9 +1,9 @@
 package web
 
 import (
-	"go.b8s.dev/nucleus/auth"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
+	"go.b8s.dev/nucleus/auth"
 )
 
 func (r *WebRouter) handleLoginShow(c *gin.Context) {

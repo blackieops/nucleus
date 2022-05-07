@@ -1,8 +1,8 @@
 package files
 
 import (
-	"fmt"
 	"crypto/sha1"
+	"fmt"
 	"path/filepath"
 	"time"
 

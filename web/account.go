@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"strconv"
 
-	"go.b8s.dev/nucleus/auth"
-	"go.b8s.dev/nucleus/nxc"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
+	"go.b8s.dev/nucleus/auth"
+	"go.b8s.dev/nucleus/nxc"
 )
 
 func (r *WebRouter) handleAccountEdit(c *gin.Context) {

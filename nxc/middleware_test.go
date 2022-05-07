@@ -53,7 +53,6 @@ func TestMiddlewareEnsureAuthorizationWithAuthNotFound(t *testing.T) {
 	})
 }
 
-
 func TestMiddlewareEnsureAuthorizationWithAuthValid(t *testing.T) {
 	testUtil.WithData(func(ctx *data.Context) {
 		middleware := &Middleware{DBContext: ctx}
@@ -110,7 +109,7 @@ func setupRequest() (*gin.Context, *httptest.ResponseRecorder) {
 	w := httptest.NewRecorder()
 	c, _ := gin.CreateTestContext(w)
 	c.Request = &http.Request{
-		URL: &url.URL{},
+		URL:    &url.URL{},
 		Header: make(http.Header),
 	}
 	return c, w

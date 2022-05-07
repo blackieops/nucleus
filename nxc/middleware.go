@@ -5,9 +5,9 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/gin-gonic/gin"
 	"go.b8s.dev/nucleus/auth"
 	"go.b8s.dev/nucleus/data"
-	"github.com/gin-gonic/gin"
 )
 
 type Middleware struct {

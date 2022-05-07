@@ -7,14 +7,14 @@ import (
 	"io/fs"
 	"net/http"
 
+	"github.com/gin-contrib/sessions"
+	"github.com/gin-gonic/gin"
 	"go.b8s.dev/nucleus/auth"
 	"go.b8s.dev/nucleus/config"
 	"go.b8s.dev/nucleus/data"
 	"go.b8s.dev/nucleus/files"
 	"go.b8s.dev/nucleus/nxc"
 	"go.b8s.dev/nucleus/web"
-	"github.com/gin-contrib/sessions"
-	"github.com/gin-gonic/gin"
 )
 
 type NucleusRouter struct {

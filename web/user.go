@@ -5,9 +5,9 @@ import (
 	"net/http"
 	"strconv"
 
-	"go.b8s.dev/nucleus/auth"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
+	"go.b8s.dev/nucleus/auth"
 )
 
 func (r *WebRouter) handleUserAvatarShow(c *gin.Context) {

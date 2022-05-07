@@ -1,10 +1,10 @@
 package web
 
 import (
+	"github.com/gin-gonic/gin"
 	"go.b8s.dev/nucleus/auth"
 	"go.b8s.dev/nucleus/data"
 	"go.b8s.dev/nucleus/internal/csrf"
-	"github.com/gin-gonic/gin"
 )
 
 type WebRouter struct {

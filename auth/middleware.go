@@ -1,10 +1,10 @@
 package auth
 
 import (
-	"go.b8s.dev/nucleus/config"
-	"go.b8s.dev/nucleus/data"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
+	"go.b8s.dev/nucleus/config"
+	"go.b8s.dev/nucleus/data"
 )
 
 type AuthMiddleware struct {
