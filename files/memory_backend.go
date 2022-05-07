@@ -2,18 +2,17 @@ package files
 
 import (
 	"io/fs"
-	"time"
 	"strings"
+	"time"
 
 	"go.b8s.dev/nucleus/auth"
 )
 
-
 // MemoryFile conforms to the fs.FileInfo interface.
 type MemoryFile struct {
-	name string
-	size int64
-	isDir bool
+	name    string
+	size    int64
+	isDir   bool
 	modTime time.Time
 }
 
@@ -84,6 +83,28 @@ func (b *MemoryStorageBackend) RenamePath(u *auth.User, src, dest string) error 
 	return nil
 }
 
+func (b *MemoryStorageBackend) CreateDirectory(u *auth.User, dir *Directory) error {
+	b.initEntries()
+	b.entries[dir.FullName+"/"] = []byte{}
+	return nil
+}
+
+func (b *MemoryStorageBackend) CreateChunkDirectory(u *auth.User, name string) error {
+	return nil
+}
+
+func (b *MemoryStorageBackend) WriteChunk(u *auth.User, name string, content []byte) error {
+	return nil
+}
+
+func (b *MemoryStorageBackend) ReconstructChunks(u *auth.User, srcDir, destPath string) error {
+	return nil
+}
+
+func (b *MemoryStorageBackend) DeleteChunkDirectory(u *auth.User, name string) error {
+	return nil
+}
+
 func (b *MemoryStorageBackend) initEntries() {
 	if b.entries == nil {
 		b.entries = make(map[string][]byte)
@@ -92,9 +113,9 @@ func (b *MemoryStorageBackend) initEntries() {
 
 func (b *MemoryStorageBackend) entryToMemoryFile(key string) MemoryFile {
 	return MemoryFile{
-		name: key,
-		size: int64(len(b.entries[key])),
-		isDir: false,
+		name:    key,
+		size:    int64(len(b.entries[key])),
+		isDir:   strings.HasSuffix(key, "/"),
 		modTime: time.Now(),
 	}
 }

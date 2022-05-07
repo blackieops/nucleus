@@ -1,8 +1,8 @@
 package files
 
 import (
-	"testing"
 	"go.b8s.dev/nucleus/auth"
+	"testing"
 )
 
 func TestMemoryStorageBackendWriteFile(t *testing.T) {
@@ -37,7 +37,7 @@ func TestMemoryStorageBackendList(t *testing.T) {
 	u := &auth.User{}
 	b := &MemoryStorageBackend{
 		entries: map[string][]byte{
-			"thing.txt": []byte("wrong"),
+			"thing.txt":      []byte("wrong"),
 			"yoink/butt.rtf": []byte("idk"),
 			"yoink/test.txt": []byte("correct"),
 		},
@@ -75,7 +75,7 @@ func TestMemoryStorageBackendDelete(t *testing.T) {
 	u := &auth.User{}
 	b := &MemoryStorageBackend{
 		entries: map[string][]byte{
-			"thing.txt": []byte("wrong"),
+			"thing.txt":      []byte("wrong"),
 			"yoink/butt.rtf": []byte("idk"),
 			"yoink/test.txt": []byte("correct"),
 		},
@@ -92,7 +92,7 @@ func TestMemoryStorageBackendRename(t *testing.T) {
 	u := &auth.User{}
 	b := &MemoryStorageBackend{
 		entries: map[string][]byte{
-			"thing.txt": []byte("wrong"),
+			"thing.txt":      []byte("wrong"),
 			"yoink/butt.rtf": []byte("idk"),
 			"yoink/test.txt": []byte("correct"),
 		},
