@@ -18,9 +18,10 @@ func TestFilesystemBackendList(t *testing.T) {
 	if len(entries) != 2 {
 		t.Errorf("List returned incorrect entry count: %d", len(entries))
 	}
+	rx := regexp.MustCompile(`(.*)\.png`)
 	for _, e := range entries {
-		matched, err := regexp.MatchString(`(.*)\.png`, e.Name())
-		if !matched || err != nil {
+		matched := rx.MatchString(e.Name())
+		if !matched {
 			t.Errorf("List returned more than just the expected pngs.")
 		}
 	}
