@@ -45,7 +45,7 @@ func (b *FilesystemBackend) CreateDirectory(user *auth.User, dir *Directory) err
 
 func (b *FilesystemBackend) DeletePath(user *auth.User, path string) error {
 	if path == "" || path == "." {
-		return errors.New("Refusing to delete all files from storage. FullName is empty.")
+		return errors.New("refusing to delete all files from storage: FullName is empty")
 	}
 	return os.RemoveAll(b.userStoragePath(user, path))
 }
