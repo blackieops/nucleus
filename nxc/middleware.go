@@ -18,9 +18,14 @@ type Middleware struct {
 // being used in the Authorization header. This is a Nextcloud-specific auth
 // strategy and should only be used on endpoints that need Nextcloud client
 // compatibility.
-func (m *Middleware) EnsureAuthorization() func(c *gin.Context) {
+func (m *Middleware) EnsureAuthorization() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		authHeaderValue := string(c.GetHeader("Authorization"))[len("Basic "):]
+		authHeaderRaw := c.GetHeader("Authorization")
+		if authHeaderRaw == "" {
+			c.AbortWithStatus(http.StatusBadRequest)
+			return
+		}
+		authHeaderValue := authHeaderRaw[len("Basic "):]
 		authHeaderValueBytes, err := base64.URLEncoding.DecodeString(authHeaderValue)
 		if err != nil {
 			c.AbortWithStatus(http.StatusBadRequest)
