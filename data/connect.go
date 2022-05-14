@@ -5,10 +5,12 @@ import (
 	"gorm.io/gorm"
 )
 
+// Context wraps the database backend.
 type Context struct {
 	DB *gorm.DB
 }
 
+// Connect establishes a database connection pool, connecting to the given URL.
 func Connect(databaseUrl string) *Context {
 	gormDB, err := gorm.Open(postgres.Open(databaseUrl), &gorm.Config{})
 	if err != nil {

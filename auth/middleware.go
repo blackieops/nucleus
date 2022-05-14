@@ -7,12 +7,14 @@ import (
 	"go.b8s.dev/nucleus/data"
 )
 
+// AuthMiddleware provides methods to enforce, check, and retrieve data from
+// the request context and session related to authentication or authorization.
 type AuthMiddleware struct {
 	DBContext *data.Context
 	Config    *config.Config
 }
 
-// Middleware to check if there is a currently logged-in user in the session.
+// EnsureSession checks if there is a currently logged-in user in the session.
 func (r *AuthMiddleware) EnsureSession(c *gin.Context) {
 	s := sessions.Default(c)
 	if s.Get("CurrentUserID") == nil {
@@ -26,6 +28,7 @@ func (r *AuthMiddleware) EnsureSession(c *gin.Context) {
 	c.Set("CurrentUser", user)
 }
 
+// GetCurrentUser pulls the current user out of the session.
 func (r *AuthMiddleware) GetCurrentUser(c *gin.Context) *User {
 	user, exist := c.Get("CurrentUser")
 	if !exist {

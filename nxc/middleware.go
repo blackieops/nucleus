@@ -14,10 +14,10 @@ type Middleware struct {
 	DBContext *data.Context
 }
 
-// Finds the user making the given request, based on the Nextcloud App Password
-// being used in the Authorization header. This is a Nextcloud-specific auth
-// strategy and should only be used on endpoints that need Nextcloud client
-// compatibility.
+// EnsureAuthorization finds the user making the given request, based on the
+// Nextcloud App Password being used in the Authorization header. This is a
+// Nextcloud-specific auth strategy and should only be used on endpoints that
+// need Nextcloud client compatibility.
 func (m *Middleware) EnsureAuthorization() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		authHeaderRaw := c.GetHeader("Authorization")

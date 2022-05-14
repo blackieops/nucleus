@@ -12,6 +12,8 @@ import (
 	"gorm.io/gorm"
 )
 
+// NextcloudAppPassword represents a connection with a Nextcloud client. Sort of
+// an "oauth token lite™".
 type NextcloudAppPassword struct {
 	gorm.Model
 	PasswordDigest string `gorm:"index"`

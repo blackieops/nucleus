@@ -9,32 +9,35 @@ import (
 	"go.b8s.dev/nucleus/auth"
 )
 
+// File represents a data object in a storage backend
 type File struct {
 	ID        uint `gorm:"primaryKey"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
 
-	// Basename of the file
+	// Name is the basename of the file
 	Name string
 
-	// Optional association to a Directory
-	ParentID *uint
+	// Parent is an optional association to a Directory
 	Parent   *Directory `gorm:"constraint:OnDelete:CASCADE;"`
+	ParentID *uint
 
-	// Association to the user who owns this file
-	UserID uint
+	// User is the owner of this file
 	User   auth.User
+	UserID uint
 
-	// Projected full path of all parent directories for easier lookups
+	// FullName is a projection of the full path of all parent directories
 	FullName string `gorm:"index"`
 
-	// File size in bytes
+	// Size is the file size in bytes
 	Size int64
 
-	// SHA-1 hash of the file content for use as an etag or similar cache key
+	// Digest is a SHA-1 hash of the file content
 	Digest string
 }
 
+// SetNames sets both the Name and generates the FullName based on the parent,
+// if it is set.
 func (f *File) SetNames(name string) {
 	f.Name = name
 	if f.Parent == nil {

@@ -6,6 +6,7 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
+// Config is a parsed version of the configuration file.
 type Config struct {
 	BaseURL       string `yaml:"base_url"`
 	Port          int    `yaml:"port"`
@@ -14,6 +15,8 @@ type Config struct {
 	DataPath      string `yaml:"data_path"`
 }
 
+// LoadConfig reads the file at the given path and parses it as a YAML
+// configuration file.
 func LoadConfig(configPath string) (*Config, error) {
 	config := &Config{}
 

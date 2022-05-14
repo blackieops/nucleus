@@ -8,6 +8,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// Generate is a Gin middleware function that generates a CSRF token and adds it
+// to the session.
 func Generate() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		s := sessions.Default(c)
@@ -16,6 +18,8 @@ func Generate() gin.HandlerFunc {
 	}
 }
 
+// Validate is a Gin middleware function that checks the `_csrf` post-form value
+// with the CSRF token in the session. Aborts the request if they mismatch.
 func Validate() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		s := sessions.Default(c)

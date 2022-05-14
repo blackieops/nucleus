@@ -10,11 +10,14 @@ import (
 	"go.b8s.dev/nucleus/data"
 )
 
+// Crawler provides methods to index the contents of a storage backend.
 type Crawler struct {
 	DBContext *data.Context
 	Backend   StorageBackend
 }
 
+// ReindexAll will crawl the entire storage backend for all users in the system
+// and index all the files it finds.
 func (c *Crawler) ReindexAll() {
 	users := auth.FindAllUsers(c.DBContext)
 
@@ -23,6 +26,8 @@ func (c *Crawler) ReindexAll() {
 	}
 }
 
+// IndexUserFiles will index all files for the given user in the storage
+// backend.
 func (c *Crawler) IndexUserFiles(user *auth.User, currentDir *Directory) {
 	var wg sync.WaitGroup
 	var entries []fs.FileInfo
@@ -64,8 +69,8 @@ func (c *Crawler) IndexUserFiles(user *auth.User, currentDir *Directory) {
 	wg.Wait()
 }
 
-// Query for the file in the storage backend and return an unpersisted struct
-// with some of the basic file metadata filled out.
+// DiscoverFile queries for the file in the storage backend and returns an
+// unpersisted struct with some of the basic file metadata filled out.
 func (c *Crawler) DiscoverFile(user *auth.User, dir *Directory, name string) (*File, error) {
 	var path string
 	if dir == nil {
@@ -94,6 +99,8 @@ func (c *Crawler) DiscoverFile(user *auth.User, dir *Directory, name string) (*F
 	return fileEntity, nil
 }
 
+// DiscoverDir finds the directory in the storage backend and returns an
+// unpersisted struct with some basic metadata populated.
 func (c *Crawler) DiscoverDir(user *auth.User, parent *Directory, name string) *Directory {
 	directory := &Directory{
 		Name: name,

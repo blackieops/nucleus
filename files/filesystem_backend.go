@@ -10,7 +10,11 @@ import (
 	"go.b8s.dev/nucleus/auth"
 )
 
+// FilesystemBackend is an implementation of the StorageBackend interface which
+// stores its data at a path on the local filesystem.
 type FilesystemBackend struct {
+	// StoragePrefix is the absolute path on the filesystem to use as
+	// persistent storage.
 	StoragePrefix string
 }
 
