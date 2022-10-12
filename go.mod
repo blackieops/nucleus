@@ -1,6 +1,6 @@
 module go.b8s.dev/nucleus
 
-go 1.17
+go 1.19
 
 require (
 	github.com/gin-contrib/sessions v0.0.4
