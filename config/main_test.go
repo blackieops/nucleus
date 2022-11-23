@@ -1,6 +1,7 @@
 package config
 
 import (
+	"os"
 	"testing"
 )
 
@@ -35,4 +36,20 @@ func TestLoadConfigInvalid(t *testing.T) {
 	if err != nil {
 		t.Errorf("Should have loaded useless but syntactically valid config!")
 	}
+}
+
+func TestLoadConfigWithEnvOverlay(t *testing.T) {
+	oldPort := os.Getenv("PORT")
+	os.Setenv("PORT", "8192")
+	conf, err := LoadConfig("internal/fixtures/valid.yaml")
+	if err != nil {
+		t.Fatalf("Failed to load valid config: %v", err)
+	}
+
+	if conf.Port != 8192 {
+		t.Fatalf("Port was not overriden by env! Got: %v", conf.Port)
+	}
+
+	// cleanup
+	os.Setenv("PORT", oldPort)
 }

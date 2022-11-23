@@ -2,6 +2,7 @@ package config
 
 import (
 	"os"
+	"strconv"
 
 	"gopkg.in/yaml.v2"
 )
@@ -31,5 +32,31 @@ func LoadConfig(configPath string) (*Config, error) {
 		return nil, err
 	}
 
+	overlayEnvironment(config)
+
 	return config, nil
+}
+
+func overlayEnvironment(config *Config) {
+	if v, isset := os.LookupEnv("BASE_URL"); isset {
+		config.BaseURL = v
+	}
+
+	if v, isset := os.LookupEnv("PORT"); isset {
+		if p, err := strconv.Atoi(v); err == nil {
+			config.Port = p
+		}
+	}
+
+	if v, isset := os.LookupEnv("DATABASE_URL"); isset {
+		config.DatabaseURL = v
+	}
+
+	if v, isset := os.LookupEnv("SESSION_SECRET"); isset {
+		config.DatabaseURL = v
+	}
+
+	if v, isset := os.LookupEnv("DATA_PATH"); isset {
+		config.DataPath = v
+	}
 }
