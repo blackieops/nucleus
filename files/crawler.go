@@ -10,6 +10,15 @@ import (
 	"go.b8s.dev/nucleus/data"
 )
 
+// crawlers is a channel that acts as a counting semaphore to prevent
+// goroutines going too wild when indexing a large directory tree.
+// TODO: it would be nice if this were configurable.
+var crawlers = make(chan bool, 32)
+
+// wg keeps a counter of all goroutines currently in-flight to ensure they all
+// finish before the program exits.
+var wg sync.WaitGroup
+
 // Crawler provides methods to index the contents of a storage backend.
 type Crawler struct {
 	DBContext *data.Context
@@ -20,16 +29,19 @@ type Crawler struct {
 // and index all the files it finds.
 func (c *Crawler) ReindexAll() {
 	users := auth.FindAllUsers(c.DBContext)
-
 	for _, user := range users {
 		c.IndexUserFiles(user, nil)
 	}
+	wg.Wait()
 }
 
 // IndexUserFiles will index all files for the given user in the storage
 // backend.
 func (c *Crawler) IndexUserFiles(user *auth.User, currentDir *Directory) {
-	var wg sync.WaitGroup
+	wg.Add(1)
+	defer wg.Done()
+	crawlers <- true
+
 	var entries []fs.FileInfo
 	var err error
 	if currentDir == nil {
@@ -48,11 +60,7 @@ func (c *Crawler) IndexUserFiles(user *auth.User, currentDir *Directory) {
 			newDir := c.DiscoverDir(user, currentDir, entry.Name())
 			directory, err := CreateDir(c.DBContext, newDir)
 			if err == nil {
-				wg.Add(1)
-				go func() {
-					defer wg.Done()
-					c.IndexUserFiles(user, directory)
-				}()
+				go c.IndexUserFiles(user, directory)
 			} else {
 				fmt.Println("Failed to discover directory in backend: ", entry.Name())
 			}
@@ -66,7 +74,7 @@ func (c *Crawler) IndexUserFiles(user *auth.User, currentDir *Directory) {
 		}
 	}
 
-	wg.Wait()
+	<- crawlers
 }
 
 // DiscoverFile queries for the file in the storage backend and returns an
