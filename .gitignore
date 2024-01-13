@@ -5,3 +5,6 @@
 # Ignore local test user data directory. Useful for using as a source for
 # testing syncing and whatnot.
 /_userdata
+
+# Ignore compiled binaries
+/nucleus
