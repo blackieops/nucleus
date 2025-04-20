@@ -34,6 +34,9 @@ func (n *NextcloudRouter) Mount(r *gin.RouterGroup) {
 	r.GET("/remote.php/dav/avatars/:username/:size",
 		mw.EnsureAuthorization(), n.handleAvatarsShow(mw))
 
+	r.GET("/ocs/v1.php/cloud/user", mw.EnsureAuthorization(), n.handleCloudUser(mw))
+	r.GET("/ocs/v2.php/cloud/user", mw.EnsureAuthorization(), n.handleCloudUser(mw))
+
 	r.GET("/ocs/v1.php/cloud/capabilities", func(c *gin.Context) {
 		c.JSON(200, BuildCapabilitiesResponse())
 	})
@@ -168,5 +171,28 @@ func (n *NextcloudRouter) handleAvatarsShow(mw *Middleware) func(*gin.Context) {
 			"Content-Disposition": `attachment; filename="avatar.png"`,
 		}
 		c.DataFromReader(http.StatusOK, contentLength, contentType, reader, extraHeaders)
+	}
+}
+
+func (n *NextcloudRouter) handleCloudUser(mw *Middleware) func (*gin.Context) {
+	return func(c *gin.Context) {
+		user := mw.GetCurrentUser(c)
+		input := OCSCloudUserInput{
+			Username: user.Username,
+			DisplayName: user.Name,
+			EmailAddress: user.EmailAddress,
+			LastLoginTime: 0,
+			// TODO: get real values
+			QuotaTotal: 999999,
+			QuotaUsed: 1,
+			QuotaFree: 999998,
+		}
+		resp := BuildOCSCloudUserResponse(input)
+		fmt.Printf("%v\n", resp)
+		if c.Query("format") == "json" {
+			c.JSON(200, resp)
+		} else {
+			c.XML(200, resp)
+		}
 	}
 }
